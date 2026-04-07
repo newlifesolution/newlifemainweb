@@ -1,0 +1,103 @@
+---
+import PapiroLayout from '../../layouts/PapiroLayout.astro';
+import Breadcrumb from '../../components/navigation/Breadcrumb.astro';
+import Divider from '../../components/papiro/Divider.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('diario');
+  return entries.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<PapiroLayout title={`${entry.data.title} — Diary`} current="diario">
+  <Breadcrumb items={[
+    { label: 'Home', href: '/' },
+    { label: 'Diary', href: '/diario' },
+    { label: entry.data.title },
+  ]} />
+
+  <article>
+    <header class="article-header">
+      <span class="date">
+        {entry.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </span>
+      <h1>{entry.data.title}</h1>
+      {entry.data.tags.length > 0 && (
+        <div class="tags">
+          {entry.data.tags.map(tag => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+    </header>
+
+    <Divider />
+
+    <div class="article-body">
+      <Content />
+    </div>
+  </article>
+</PapiroLayout>
+
+<style>
+  .article-header { margin-bottom: 1rem; }
+
+  .date {
+    font-family: var(--g-font-mono); font-size: 0.7rem;
+    color: var(--g-ink-gold); letter-spacing: 0.5px;
+  }
+
+  h1 {
+    font-family: var(--g-font-display);
+    font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+    font-weight: 700; color: var(--g-ink-primary);
+    letter-spacing: 1px; margin: 0.3rem 0 0.5rem;
+  }
+
+  .tags { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+
+  .tag {
+    font-family: var(--g-font-mono); font-size: 0.6rem;
+    color: var(--g-ink-secondary); background: rgba(42,31,20,0.06);
+    padding: 2px 8px; border-radius: 2px;
+  }
+
+  .article-body :global(h2) {
+    font-family: var(--g-font-display); font-size: 1.1rem; font-weight: 700;
+    color: var(--g-ink-primary); letter-spacing: 1px;
+    margin-top: 1.5rem; margin-bottom: 0.5rem;
+    padding-bottom: 0.3rem; border-bottom: 1px solid var(--g-pentacle-line);
+  }
+
+  .article-body :global(p) {
+    font-size: 0.95rem; color: var(--g-ink-secondary); line-height: 1.85; margin-bottom: 1rem;
+  }
+
+  .article-body :global(strong) { color: var(--g-ink-primary); font-weight: 600; }
+
+  .article-body :global(blockquote) {
+    border-left: 2px solid var(--g-ink-gold);
+    padding: 0.5rem 1rem; margin: 1rem 0;
+    font-style: italic; color: var(--g-ink-secondary);
+    background: rgba(139,105,20,0.05); border-radius: 0 3px 3px 0;
+  }
+
+  .article-body :global(code) {
+    font-family: var(--g-font-mono); font-size: 0.8rem;
+    background: rgba(42,31,20,0.08); padding: 1px 5px; border-radius: 2px;
+  }
+
+  .article-body :global(pre) {
+    background: var(--g-bg-conjuro); border: 1px solid rgba(196,160,80,0.2);
+    border-radius: 4px; padding: 1rem; overflow-x: auto; margin: 1rem 0;
+  }
+
+  .article-body :global(pre code) {
+    background: none; padding: 0; font-size: 0.78rem; color: var(--g-conjuro-text);
+  }
+</style>

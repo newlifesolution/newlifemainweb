@@ -1,0 +1,108 @@
+---
+import PapiroLayout from '../../layouts/PapiroLayout.astro';
+import Breadcrumb from '../../components/navigation/Breadcrumb.astro';
+import Divider from '../../components/papiro/Divider.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('diario'))
+  .filter(e => !e.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<PapiroLayout title="Diario del Djinn" current="diario">
+  <Breadcrumb items={[
+    { label: 'Home', href: '/' },
+    { label: 'Diary' },
+  ]} />
+
+  <div class="header">
+    <div class="hieroglyphs">🜃 𓅓 𓇋</div>
+    <h1>Diario del Djinn</h1>
+    <p class="subtitle">Reflections, paper reviews, and experiment logs.</p>
+  </div>
+
+  <Divider />
+
+  {entries.length === 0 || (entries.length === 1 && entries[0]?.slug === 'day-one') ? (
+    <div class="empty-state">
+      <p>The diary awaits its first entry.</p>
+      <p class="hint">Add <code>.mdx</code> files to <code>src/content/diario/</code> to begin.</p>
+    </div>
+  ) : (
+    <div class="entry-list">
+      {entries.map(entry => (
+        <a href={`/diario/${entry.id}`} class="diary-entry">
+          <span class="entry-date">
+            {entry.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </span>
+          <h3>{entry.data.title}</h3>
+          {entry.data.excerpt && <p class="excerpt">{entry.data.excerpt}</p>}
+          {entry.data.tags.length > 0 && (
+            <div class="tags">
+              {entry.data.tags.map(tag => <span class="tag">{tag}</span>)}
+            </div>
+          )}
+        </a>
+      ))}
+    </div>
+  )}
+</PapiroLayout>
+
+<style>
+  .header { text-align: center; margin-bottom: 1rem; }
+
+  .hieroglyphs {
+    font-size: 18px; color: var(--g-ink-gold);
+    letter-spacing: 10px; opacity: 0.4; margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-family: var(--g-font-display);
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 900; color: var(--g-ink-primary);
+    letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.3rem;
+  }
+
+  .subtitle { font-size: 0.9rem; color: var(--g-ink-secondary); }
+
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--g-ink-secondary); font-style: italic; }
+  .empty-state .hint { margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.6; font-style: normal; }
+  .empty-state code {
+    font-family: var(--g-font-mono); font-size: 0.75rem;
+    background: rgba(42,31,20,0.08); padding: 1px 5px; border-radius: 2px;
+  }
+
+  .entry-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .diary-entry {
+    display: block; padding: 1rem;
+    border: 1px solid var(--g-pentacle-line); border-radius: 4px;
+    background: rgba(42,31,20,0.03); text-decoration: none; transition: all 0.2s;
+  }
+
+  .diary-entry:hover {
+    background: rgba(42,31,20,0.08);
+    box-shadow: 0 2px 12px rgba(139,108,66,0.1);
+    transform: translateY(-1px); opacity: 1;
+  }
+
+  .entry-date {
+    font-family: var(--g-font-mono); font-size: 0.65rem;
+    color: var(--g-ink-gold); letter-spacing: 0.5px;
+  }
+
+  h3 {
+    font-family: var(--g-font-body); font-size: 1.05rem; font-weight: 600;
+    color: var(--g-ink-primary); margin: 0.2rem 0;
+  }
+
+  .excerpt { font-size: 0.85rem; color: var(--g-ink-secondary); line-height: 1.5; }
+
+  .tags { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-top: 0.4rem; }
+
+  .tag {
+    font-family: var(--g-font-mono); font-size: 0.6rem;
+    color: var(--g-ink-secondary); background: rgba(42,31,20,0.06);
+    padding: 1px 6px; border-radius: 2px;
+  }
+</style>

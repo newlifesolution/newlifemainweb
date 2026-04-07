@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Navbar from '../components/navigation/Navbar.astro';
 
 const links = [
   { label: 'GitHub', href: 'https://github.com/ifranjo' },
@@ -17,6 +18,8 @@ const layers = [
 ---
 
 <Base title="Imanol Franjo — Grimorio AI">
+
+  <Navbar current="home" />
 
   <main class="page">
 
@@ -149,7 +152,7 @@ linkedin.com/in/imanol-franjo</div>
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem 1rem;
+    padding: 4.5rem 1rem 2rem;
     min-height: 100vh;
   }
 

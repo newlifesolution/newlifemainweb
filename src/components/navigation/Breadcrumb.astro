@@ -1,0 +1,62 @@
+---
+/**
+ * Breadcrumb — Grimoire-styled path trail.
+ */
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  {items.map((item, i) => (
+    <>
+      {i > 0 && <span class="sep">&#x25B8;</span>}
+      {item.href ? (
+        <a href={item.href}>{item.label}</a>
+      ) : (
+        <span class="current">{item.label}</span>
+      )}
+    </>
+  ))}
+</nav>
+
+<style>
+  .breadcrumb {
+    font-family: var(--g-font-display);
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  a {
+    color: var(--g-ink-gold);
+    text-decoration: none;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  a:hover { opacity: 1; }
+
+  .sep {
+    color: var(--g-ink-gold);
+    opacity: 0.3;
+    font-size: 0.5rem;
+  }
+
+  .current {
+    color: var(--g-ink-primary);
+    opacity: 0.8;
+  }
+</style>

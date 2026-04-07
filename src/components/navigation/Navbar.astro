@@ -1,0 +1,192 @@
+---
+/**
+ * Navbar — Grimoire-styled top navigation.
+ * Minimal on mobile, expands on desktop.
+ */
+interface Props {
+  current?: string;
+}
+
+const { current = '' } = Astro.props;
+
+const links = [
+  { href: '/', label: 'Home', id: 'home' },
+  { href: '/grimorio', label: 'Grimorio', id: 'grimorio' },
+  { href: '/proyectos', label: 'Projects', id: 'proyectos' },
+  { href: '/diario', label: 'Diary', id: 'diario' },
+];
+---
+
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <span class="seal-mini">IF</span>
+  </a>
+
+  <div class="nav-links">
+    {links.map(link => (
+      <a
+        href={link.href}
+        class:list={['nav-link', { active: current === link.id }]}
+      >
+        {link.label}
+      </a>
+    ))}
+  </div>
+
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="nav-mobile" id="nav-mobile">
+  {links.map(link => (
+    <a
+      href={link.href}
+      class:list={['nav-mobile-link', { active: current === link.id }]}
+    >
+      {link.label}
+    </a>
+  ))}
+</div>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const mobile = document.getElementById('nav-mobile');
+  toggle?.addEventListener('click', () => {
+    mobile?.classList.toggle('open');
+  });
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    height: 52px;
+    background: rgba(15,12,8,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(196,160,80,0.15);
+  }
+
+  .nav-logo {
+    text-decoration: none;
+  }
+
+  .seal-mini {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid var(--g-seal-red);
+    border-radius: 50%;
+    font-family: var(--g-font-display);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--g-seal-red);
+    transition: box-shadow 0.3s;
+  }
+
+  .seal-mini:hover {
+    box-shadow: 0 0 12px rgba(160,32,32,0.3);
+  }
+
+  .nav-links {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .nav-links { display: flex; }
+    .nav-toggle { display: none !important; }
+  }
+
+  .nav-link {
+    font-family: var(--g-font-display);
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: rgba(232,213,168,0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+
+  .nav-link:hover {
+    color: var(--g-conjuro-text);
+    background: rgba(196,160,80,0.08);
+    opacity: 1;
+  }
+
+  .nav-link.active {
+    color: var(--g-demon-glow);
+    background: rgba(196,160,80,0.1);
+  }
+
+  .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--g-conjuro-text);
+    cursor: pointer;
+    padding: 0.4rem;
+    opacity: 0.6;
+  }
+
+  .nav-toggle:hover { opacity: 1; }
+
+  /* Mobile menu */
+  .nav-mobile {
+    display: none;
+    position: fixed;
+    top: 52px;
+    left: 0;
+    right: 0;
+    z-index: 49;
+    background: rgba(15,12,8,0.97);
+    border-bottom: 1px solid rgba(196,160,80,0.15);
+    padding: 0.5rem 1.5rem 1rem;
+  }
+
+  .nav-mobile.open {
+    display: block;
+  }
+
+  @media (min-width: 640px) {
+    .nav-mobile { display: none !important; }
+  }
+
+  .nav-mobile-link {
+    display: block;
+    font-family: var(--g-font-display);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(232,213,168,0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(196,160,80,0.08);
+    transition: color 0.2s;
+  }
+
+  .nav-mobile-link:hover,
+  .nav-mobile-link.active {
+    color: var(--g-demon-glow);
+    opacity: 1;
+  }
+</style>

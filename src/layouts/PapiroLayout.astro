@@ -1,0 +1,53 @@
+---
+/**
+ * PapiroLayout — Full page layout with navbar, scroll, and footer.
+ * Use this for interior pages (grimorio, proyectos, diario).
+ */
+import Base from './Base.astro';
+import Navbar from '../components/navigation/Navbar.astro';
+import ScrollLayout from '../components/papiro/ScrollLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  current?: string;
+  maxWidth?: string;
+}
+
+const { title, description, current, maxWidth = '800px' } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <Navbar current={current} />
+
+  <main class="page-main">
+    <ScrollLayout maxWidth={maxWidth}>
+      <slot />
+    </ScrollLayout>
+  </main>
+
+  <footer class="page-footer">
+    <p>&copy; 2026 Imanol Franjo &middot; Built with Astro</p>
+  </footer>
+</Base>
+
+<style>
+  .page-main {
+    padding: 4.5rem 1rem 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .page-footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-family: var(--g-font-display);
+    font-size: 0.55rem;
+    color: var(--g-ink-gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.35;
+  }
+</style>
