@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Symbols+2&display=swap');
+
+:root {
+  /* Papyrus Palette */
+  --g-bg-primary: #0f0c08;
+  --g-bg-secondary: #1a1410;
+  --g-bg-papyrus: #f4e4c1;
+  --g-bg-papyrus-dark: #d4c4a1;
+  --g-bg-conjuro: #1e1610;
+
+  /* Ink Colors */
+  --g-ink-primary: #2a1f14;
+  --g-ink-secondary: #5c3d2e;
+  --g-ink-gold: #8b6914;
+  --g-ink-red: #8b2500;
+  --g-ink-blue: #1a3a5c;
+  --g-ink-green: #2d4a22;
+
+  /* UI */
+  --g-seal-red: #a02020;
+  --g-burn-edge: #8b6c42;
+  --g-conjuro-border: #c4a050;
+  --g-conjuro-text: #e8d5a8;
+  --g-demon-glow: #d4a017;
+  --g-pentacle-line: rgba(196,160,80,0.4);
+  --g-smoke: rgba(42,31,20,0.06);
+
+  /* Typography */
+  --g-font-display: 'Cinzel', serif;
+  --g-font-body: 'Cormorant Garamond', serif;
+  --g-font-mono: 'JetBrains Mono', monospace;
+  --g-font-symbols: 'Noto Sans Symbols 2', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--g-bg-primary);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(139,105,20,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 30%, rgba(160,32,32,0.05) 0%, transparent 50%);
+  min-height: 100vh;
+  font-family: var(--g-font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--g-ink-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(139,105,20,0.3);
+  color: var(--g-ink-primary);
+}
+
+a {
+  color: var(--g-ink-gold);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+a:hover { opacity: 0.8; }

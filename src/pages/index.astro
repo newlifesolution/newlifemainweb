@@ -1,0 +1,528 @@
+---
+import Base from '../layouts/Base.astro';
+
+const links = [
+  { label: 'GitHub', href: 'https://github.com/ifranjo' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/imanol-franjo' },
+  { label: 'GHI Smart Furnaces', href: 'https://www.ghifurnaces.com' },
+];
+
+const layers = [
+  { symbol: '☿', name: 'Landing & Identity', desc: 'You are here. The starting point.', active: true },
+  { symbol: '𓁹', name: 'Grimorio Académico', desc: 'Course modules, notes, diagrams, and conjuros.', active: false },
+  { symbol: '🜁', name: 'Taller de Proyectos', desc: 'AI/ML projects with demos, repos, and dev logs.', active: false },
+  { symbol: '🜃', name: 'Diario del Djinn', desc: 'Reflections, paper reviews, experiment logs.', active: false },
+  { symbol: '⟡', name: 'Panteón', desc: 'Curated showcase — the best of everything.', active: false },
+];
+---
+
+<Base title="Imanol Franjo — Grimorio AI">
+
+  <main class="page">
+
+    <!-- Scroll Container -->
+    <div class="scroll-container">
+      <div class="scroll-roll">
+        <div class="knob left"></div>
+        <div class="knob right"></div>
+      </div>
+
+      <div class="papyrus">
+
+        <!-- Header -->
+        <header class="header">
+          <div class="hieroglyphs">𓂀 𓃭 𓆣 𓁹 𓄿 𓅓</div>
+          <h1 class="title">Imanol Franjo</h1>
+          <p class="subtitle">AI Engineering &middot; MSc Artificial Intelligence</p>
+          <div class="seal"></div>
+        </header>
+
+        <hr class="divider" />
+
+        <!-- Intro -->
+        <section class="intro">
+          <p>
+            Industrial engineer at <strong>GHI Smart Furnaces</strong>, pursuing a Master's in
+            Artificial Intelligence. I build intelligent systems at the intersection of
+            manufacturing, automation, and machine learning.
+          </p>
+          <p>
+            This grimoire documents my journey: projects, experiments, papers,
+            and lessons learned along the way. Each section will grow as the master's progresses.
+          </p>
+        </section>
+
+        <!-- Links -->
+        <div class="links">
+          {links.map(link => (
+            <a href={link.href} target="_blank" rel="noopener noreferrer" class="pill">
+              {link.label}
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M7 17L17 7M17 7H7M17 7v10"/>
+              </svg>
+            </a>
+          ))}
+        </div>
+
+        <div class="pentacle-break">☿ ⟐ ♃ ⟡ ♄</div>
+
+        <!-- Layers / Roadmap -->
+        <section class="layers-section">
+          <h2 class="section-heading">
+            <span class="section-icon">𓃭</span> The Five Layers
+          </h2>
+          <p class="section-desc">What this site will become — built incrementally, one layer at a time.</p>
+
+          <div class="timeline">
+            {layers.map(layer => (
+              <div class={`timeline-item ${layer.active ? 'active' : ''}`}>
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <h3><span class="layer-symbol">{layer.symbol}</span> {layer.name}</h3>
+                  <p>{layer.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <hr class="divider" />
+
+        <!-- About / Context -->
+        <section class="about-section">
+          <h2 class="section-heading">
+            <span class="section-icon">𓂀</span> Background
+          </h2>
+          <div class="stats-row">
+            <div class="stat-card">
+              <span class="stat-value">GHI</span>
+              <span class="stat-label">Smart Furnaces</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">2026</span>
+              <span class="stat-label">MSc Start</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">AI/ML</span>
+              <span class="stat-label">Focus Area</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">80+</span>
+              <span class="stat-label">Automation Projects</span>
+            </div>
+          </div>
+        </section>
+
+        <hr class="divider" />
+
+        <!-- Contact -->
+        <section class="contact-section">
+          <div class="conjuro">
+            <div class="conjuro-header">
+              <span class="conjuro-symbol">🜔</span>
+              <span class="conjuro-title">Contact</span>
+            </div>
+            <div class="conjuro-body">ifranjo@ghifurnaces.com
+github.com/ifranjo
+linkedin.com/in/imanol-franjo</div>
+          </div>
+        </section>
+
+        <!-- Colophon -->
+        <div class="colophon">
+          &copy; 2026 Imanol Franjo &middot; Built with Astro &middot; Deployed on Vercel
+        </div>
+
+      </div>
+
+      <div class="scroll-roll bottom">
+        <div class="knob left"></div>
+        <div class="knob right"></div>
+      </div>
+    </div>
+
+  </main>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+  }
+
+  /* Scroll Roll */
+  .scroll-container {
+    max-width: 800px;
+    width: 100%;
+  }
+
+  .scroll-roll {
+    height: 38px;
+    background: linear-gradient(180deg,
+      #5a4420 0%, #7a6235 15%, #8b7245 30%, #a08855 50%,
+      #8b7245 70%, #6b5230 85%, #4a3820 100%);
+    border-radius: 5px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,235,180,0.15);
+  }
+
+  .knob {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 32px;
+    background: radial-gradient(ellipse at center, #d4a050, #8b6914, #5a4012);
+    border-radius: 4px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,235,180,0.3);
+  }
+
+  .knob.left { left: -6px; }
+  .knob.right { right: -6px; }
+
+  /* Papyrus */
+  .papyrus {
+    background: var(--g-bg-papyrus);
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+    padding: 3rem 2.5rem;
+    position: relative;
+    box-shadow:
+      inset 0 0 80px rgba(139,108,66,0.3),
+      inset 0 0 160px rgba(139,108,66,0.1),
+      0 0 40px rgba(0,0,0,0.6);
+    border-left: 3px solid var(--g-burn-edge);
+    border-right: 3px solid var(--g-burn-edge);
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .hieroglyphs {
+    font-family: var(--g-font-symbols);
+    font-size: 18px;
+    color: var(--g-ink-gold);
+    letter-spacing: 10px;
+    opacity: 0.45;
+    margin-bottom: 0.5rem;
+  }
+
+  .title {
+    font-family: var(--g-font-display);
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    font-weight: 900;
+    color: var(--g-ink-primary);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+    text-shadow: 1px 1px 0 rgba(244,228,193,0.8);
+  }
+
+  .subtitle {
+    font-family: var(--g-font-display);
+    font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+    color: var(--g-ink-secondary);
+    letter-spacing: 2px;
+  }
+
+  .seal {
+    display: inline-block;
+    margin-top: 1rem;
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--g-seal-red);
+    border-radius: 50%;
+    position: relative;
+    opacity: 0.6;
+    animation: seal-pulse 4s ease-in-out infinite;
+  }
+
+  .seal::after {
+    content: 'IF';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--g-font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--g-seal-red);
+  }
+
+  @keyframes seal-pulse {
+    0%, 100% { box-shadow: 0 0 0 rgba(160,32,32,0); }
+    50% { box-shadow: 0 0 20px rgba(160,32,32,0.2); }
+  }
+
+  /* Divider */
+  .divider {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--g-ink-gold), var(--g-ink-secondary), var(--g-ink-gold), transparent);
+    margin: 2rem 0;
+    opacity: 0.4;
+  }
+
+  /* Intro */
+  .intro {
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .intro p {
+    font-size: 1.05rem;
+    color: var(--g-ink-secondary);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .intro strong {
+    color: var(--g-ink-primary);
+    font-weight: 600;
+  }
+
+  /* Links */
+  .links {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--g-pentacle-line);
+    border-radius: 999px;
+    font-family: var(--g-font-body);
+    font-size: 0.85rem;
+    color: var(--g-ink-secondary);
+    transition: all 0.2s;
+  }
+
+  .pill:hover {
+    border-color: var(--g-ink-gold);
+    color: var(--g-ink-gold);
+    opacity: 1;
+    box-shadow: 0 2px 12px rgba(139,105,20,0.15);
+  }
+
+  /* Pentacle Break */
+  .pentacle-break {
+    text-align: center;
+    margin: 2rem 0;
+    color: var(--g-ink-gold);
+    opacity: 0.3;
+    font-size: 1.1rem;
+    letter-spacing: 12px;
+    font-family: var(--g-font-symbols);
+  }
+
+  /* Section Headings */
+  .section-heading {
+    font-family: var(--g-font-display);
+    font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+    font-weight: 700;
+    color: var(--g-ink-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--g-pentacle-line);
+  }
+
+  .section-icon {
+    color: var(--g-ink-gold);
+    font-style: normal;
+    margin-right: 0.5rem;
+  }
+
+  .section-desc {
+    color: var(--g-ink-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--g-ink-gold), var(--g-ink-red), var(--g-ink-gold));
+    opacity: 0.35;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.25rem;
+    padding-left: 1rem;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -1.7rem;
+    top: 0.35rem;
+    width: 12px;
+    height: 12px;
+    background: var(--g-bg-papyrus);
+    border: 2px solid var(--g-ink-gold);
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  .timeline-item.active .timeline-dot {
+    background: var(--g-ink-gold);
+    box-shadow: 0 0 8px rgba(139,105,20,0.4);
+  }
+
+  .timeline-content h3 {
+    font-family: var(--g-font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--g-ink-primary);
+    letter-spacing: 1px;
+    margin-bottom: 0.2rem;
+  }
+
+  .layer-symbol {
+    color: var(--g-ink-gold);
+    margin-right: 0.4rem;
+  }
+
+  .timeline-content p {
+    font-size: 0.85rem;
+    color: var(--g-ink-secondary);
+    line-height: 1.5;
+  }
+
+  /* Stats */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .stat-card {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--g-pentacle-line);
+    border-radius: 4px;
+    background: rgba(42,31,20,0.04);
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .stat-card:hover {
+    background: rgba(42,31,20,0.08);
+    box-shadow: 0 2px 12px rgba(139,108,66,0.1);
+  }
+
+  .stat-value {
+    display: block;
+    font-family: var(--g-font-mono);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--g-ink-primary);
+    margin-bottom: 0.15rem;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    color: var(--g-ink-gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Conjuro */
+  .conjuro {
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--g-bg-conjuro);
+    border: 1.5px solid var(--g-conjuro-border);
+    border-radius: 4px;
+    padding: 1.2rem 1.4rem;
+    position: relative;
+    box-shadow:
+      0 0 30px rgba(196,160,80,0.1),
+      inset 0 0 40px rgba(0,0,0,0.4);
+  }
+
+  .conjuro::before {
+    content: '';
+    position: absolute;
+    top: 4px; left: 4px; right: 4px; bottom: 4px;
+    border: 1px dashed rgba(196,160,80,0.2);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .conjuro-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(196,160,80,0.2);
+  }
+
+  .conjuro-symbol {
+    font-size: 1.2rem;
+    color: var(--g-conjuro-border);
+    line-height: 1;
+  }
+
+  .conjuro-title {
+    font-family: var(--g-font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--g-conjuro-border);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .conjuro-body {
+    font-family: var(--g-font-mono);
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: var(--g-conjuro-text);
+    white-space: pre-line;
+  }
+
+  /* Colophon */
+  .colophon {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-family: var(--g-font-display);
+    font-size: 0.58rem;
+    color: var(--g-ink-gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.4;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .page { padding: 1rem 0.5rem; }
+    .papyrus { padding: 2rem 1.2rem; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
