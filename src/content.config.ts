@@ -42,4 +42,17 @@ const diario = defineCollection({
   }),
 });
 
-export const collections = { grimorio, proyectos, diario };
+const glosario = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/glosario' }),
+  schema: z.object({
+    term: z.string(),
+    category: z.string(),
+    aliases: z.array(z.string()).default([]),
+    related: z.array(z.string()).default([]),
+    parent: z.string().optional(),
+    order: z.number().default(99),
+    source: z.string().optional(),
+  }),
+});
+
+export const collections = { grimorio, proyectos, diario, glosario };
