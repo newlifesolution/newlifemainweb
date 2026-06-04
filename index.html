@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Imanol Franjo — AI Engineering & Advisory · Bilbao">
+<title>Imanol Franjo · AI Engineering & Advisory</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>◇</text></svg>">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --ink: #e8e6e1;
+  --ink-dim: #8a8894;
+  --accent: #7dd3c0;
+  --line: rgba(232, 230, 225, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+  overflow: hidden;
+}
+
+#scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  pointer-events: none;
+}
+
+.content a { pointer-events: auto; }
+
+.kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 1.4rem;
+  animation: fadeUp 1.2s ease 0.2s both;
+}
+
+h1 {
+  font-size: clamp(2.2rem, 7vw, 4.4rem);
+  font-weight: 250;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  animation: fadeUp 1.2s ease 0.4s both;
+}
+
+h1 strong { font-weight: 600; }
+
+.divider {
+  width: 56px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  margin: 2rem 0;
+  animation: fadeUp 1.2s ease 0.6s both;
+}
+
+.tagline {
+  font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  animation: fadeUp 1.2s ease 0.7s both;
+}
+
+.meta {
+  position: fixed;
+  bottom: 2rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+  z-index: 1;
+  animation: fadeUp 1.2s ease 1s both;
+}
+
+.meta a {
+  color: var(--ink-dim);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 2px;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.meta a:hover { color: var(--accent); border-color: var(--accent); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .meta { flex-direction: column; gap: 0.6rem; align-items: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kicker, h1, .divider, .tagline, .meta { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+
+<main class="content">
+  <div class="kicker">Bilbao · Spain</div>
+  <h1>Imanol <strong>Franjo</strong></h1>
+  <div class="divider"></div>
+  <p class="tagline">AI Engineering &amp; Advisory</p>
+</main>
+
+<footer class="meta">
+  <a href="mailto:imanol@newlifesolutions.dev">imanol@newlifesolutions.dev</a>
+  <a href="https://github.com/imafranj" target="_blank" rel="noopener noreferrer">github</a>
+</footer>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x0a0a0f, 8, 26);
+
+const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+camera.position.z = 12;
+
+// ── Geometry pool: clean wireframe solids ──────────────────────────
+const geometries = [
+  new THREE.IcosahedronGeometry(1.15, 0),
+  new THREE.OctahedronGeometry(1.05, 0),
+  new THREE.TetrahedronGeometry(1.1, 0),
+  new THREE.TorusGeometry(0.85, 0.3, 8, 20),
+  new THREE.DodecahedronGeometry(1.0, 0),
+  new THREE.TorusKnotGeometry(0.7, 0.22, 48, 8),
+];
+
+const inkMat = new THREE.LineBasicMaterial({ color: 0x3d3d4d, transparent: true, opacity: 0.7 });
+const accentMat = new THREE.LineBasicMaterial({ color: 0x7dd3c0, transparent: true, opacity: 0.5 });
+
+const shapes = [];
+const COUNT = 14;
+
+for (let i = 0; i < COUNT; i++) {
+  const geo = geometries[i % geometries.length];
+  const mat = (i % 5 === 0) ? accentMat : inkMat;
+  const wire = new THREE.LineSegments(new THREE.EdgesGeometry(geo), mat);
+
+  const radius = 5.5 + Math.random() * 7;
+  const theta = Math.random() * Math.PI * 2;
+  const y = (Math.random() - 0.5) * 12;
+
+  wire.position.set(Math.cos(theta) * radius, y, Math.sin(theta) * radius - 4);
+  const s = 0.5 + Math.random() * 1.1;
+  wire.scale.setScalar(s);
+  wire.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+
+  wire.userData = {
+    rotX: (Math.random() - 0.5) * 0.004,
+    rotY: (Math.random() - 0.5) * 0.004,
+    floatSpeed: 0.2 + Math.random() * 0.4,
+    floatAmp: 0.3 + Math.random() * 0.5,
+    baseY: wire.position.y,
+    phase: Math.random() * Math.PI * 2,
+  };
+
+  scene.add(wire);
+  shapes.push(wire);
+}
+
+// ── Subtle starfield dust ──────────────────────────────────────────
+const dustGeo = new THREE.BufferGeometry();
+const dustCount = 220;
+const positions = new Float32Array(dustCount * 3);
+for (let i = 0; i < dustCount * 3; i += 3) {
+  positions[i]     = (Math.random() - 0.5) * 40;
+  positions[i + 1] = (Math.random() - 0.5) * 26;
+  positions[i + 2] = (Math.random() - 0.5) * 30 - 5;
+}
+dustGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({
+  color: 0x55525e, size: 0.035, transparent: true, opacity: 0.8,
+}));
+scene.add(dust);
+
+// ── Mouse parallax ─────────────────────────────────────────────────
+let targetX = 0, targetY = 0, curX = 0, curY = 0;
+window.addEventListener('pointermove', (e) => {
+  targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+  targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+// ── Resize ─────────────────────────────────────────────────────────
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ── Loop ───────────────────────────────────────────────────────────
+const clock = new THREE.Clock();
+
+function frame() {
+  const t = clock.getElapsedTime();
+
+  for (const s of shapes) {
+    const u = s.userData;
+    s.rotation.x += u.rotX;
+    s.rotation.y += u.rotY;
+    s.position.y = u.baseY + Math.sin(t * u.floatSpeed + u.phase) * u.floatAmp;
+  }
+
+  dust.rotation.y = t * 0.008;
+
+  curX += (targetX - curX) * 0.04;
+  curY += (targetY - curY) * 0.04;
+  camera.position.x = curX * 1.4;
+  camera.position.y = -curY * 1.0;
+  camera.lookAt(0, 0, 0);
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+if (reduceMotion) {
+  // Single static render, no animation loop
+  renderer.render(scene, camera);
+} else {
+  frame();
+}
+</script>
+
+</body>
+</html>
