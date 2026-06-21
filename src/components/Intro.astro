@@ -61,28 +61,63 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
       const sizeWarp = () => { W = warp.width = window.innerWidth; H = warp.height = window.innerHeight; CX = W / 2; CY = H / 2; };
       sizeWarp();
       window.addEventListener('resize', sizeWarp);
-      const N = 460;
-      const mk = () => ({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() * 0.9 + 0.25, pz: 0 });
-      const stars = Array.from({ length: N }, mk);
+      const N = 700;
+      // angle = fixed radial direction (true vanishing-point tunnel); r grows from center out.
+      const mk = (seed = false) => {
+        const ang = Math.random() * Math.PI * 2;
+        return {
+          ang,
+          r: seed ? Math.random() * 0.6 : 0.0,          // normalized radius 0..1+
+          rr: 0,                                          // previous radius (for streak length)
+          spd: 0.55 + Math.random() * 0.9,               // per-star speed multiplier
+          hue: Math.random(),                            // 0=teal/white core, ->1 cooler blue
+          tw: 0.5 + Math.random() * 0.5,                 // brightness
+        };
+      };
+      const stars = Array.from({ length: N }, () => mk(true));
 
       function hyperspace(duration: number, onDone: () => void) {
         const start = performance.now();
+        const maxR = Math.hypot(W, H) * 0.62;
         const step = (now: number) => {
           const t = Math.min(1, (now - start) / duration);
-          const speed = 0.006 + t * t * 0.075;
-          const k = Math.min(W, H) * 0.55;
-          wctx.fillStyle = 'rgba(5,5,7,0.34)';
+          // brutal ease-in: slow build then a hard punch toward the jump
+          const accel = 0.004 + Math.pow(t, 2.4) * 0.085;
+
+          // motion-blur trail
+          wctx.fillStyle = 'rgba(4,5,9,0.30)';
           wctx.fillRect(0, 0, W, H);
+
+          // --- luminous vanishing-point core (the heart of the jump) ---
+          const coreR = (40 + t * 230) * (1 + 0.12 * Math.sin(now * 0.02));
+          const g = wctx.createRadialGradient(CX, CY, 0, CX, CY, coreR);
+          g.addColorStop(0, `rgba(220,255,250,${0.5 + t * 0.5})`);
+          g.addColorStop(0.25, `rgba(0,224,198,${0.35 + t * 0.35})`);
+          g.addColorStop(0.6, `rgba(40,120,200,${0.12 + t * 0.18})`);
+          g.addColorStop(1, 'rgba(10,20,40,0)');
+          wctx.globalCompositeOperation = 'lighter';
+          wctx.fillStyle = g;
+          wctx.beginPath(); wctx.arc(CX, CY, coreR, 0, Math.PI * 2); wctx.fill();
+
+          // --- star streaks radiating from the core ---
           for (const s of stars) {
-            s.pz = s.z; s.z -= speed;
-            if (s.z <= 0.03) { Object.assign(s, mk()); s.z = 1.15; s.pz = 1.15; }
-            const sx = CX + (s.x / s.z) * k, sy = CY + (s.y / s.z) * k;
-            const px = CX + (s.x / s.pz) * k, py = CY + (s.y / s.pz) * k;
-            const a = Math.min(1, 1 - s.z);
-            wctx.strokeStyle = `rgba(${170 + a * 70 | 0},255,${245},${a})`;
-            wctx.lineWidth = Math.max(1, (1 - s.z) * 2.6);
+            s.rr = s.r;
+            s.r += accel * s.spd * (0.3 + s.r * 2.2); // accelerate as they near the rim
+            if (s.r > 1.15) Object.assign(s, mk(false));
+            const cos = Math.cos(s.ang), sin = Math.sin(s.ang);
+            const px = CX + cos * s.rr * maxR, py = CY + sin * s.rr * maxR;
+            const sx = CX + cos * s.r * maxR, sy = CY + sin * s.r * maxR;
+            const a = Math.min(1, s.r * 1.3) * s.tw;
+            // color: teal/white near core, cooler outward
+            const rC = 150 + (1 - s.hue) * 105 | 0;
+            const gC = 240;
+            const bC = 220 + s.hue * 35 | 0;
+            wctx.strokeStyle = `rgba(${rC},${gC},${bC},${a})`;
+            wctx.lineWidth = Math.max(0.6, s.r * 3.2);
             wctx.beginPath(); wctx.moveTo(px, py); wctx.lineTo(sx, sy); wctx.stroke();
           }
+          wctx.globalCompositeOperation = 'source-over';
+
           if (t < 1) requestAnimationFrame(step); else onDone();
         };
         requestAnimationFrame(step);
@@ -97,7 +132,7 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
         intro.classList.add('off'); // CRT collapse to a point
         window.setTimeout(() => {
           intro.classList.add('warping'); // fade CRT out, run tunnel + text morph
-          hyperspace(1150, () => {
+          hyperspace(1500, () => {
             intro.classList.add('arrive'); // white flash "BAM"
             window.setTimeout(() => {
               document.documentElement.style.overflow = '';
@@ -148,8 +183,10 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
   .warp-text { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; pointer-events: none; }
   .warp-text span.t-old, .warp-text span.t-new { grid-area: 1 / 1; font-weight: 700; white-space: nowrap;
     letter-spacing: 0.04em; opacity: 0; }
-  .t-old { font-size: clamp(1.4rem, 6vw, 3rem); color: #aeb6c2; }
-  .t-new { font-size: clamp(1.6rem, 7vw, 3.6rem); color: #eef0f4; }
+  .t-old { font-size: clamp(1.4rem, 6vw, 3rem); color: #aeb6c2;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.9); }
+  .t-new { font-size: clamp(1.6rem, 7vw, 3.6rem); color: #eef0f4;
+    text-shadow: 0 0 22px rgba(0,0,0,0.85), 0 0 40px rgba(0,224,198,0.45); }
   .t-new .accent { color: #00e0c6; }
   .crt-flash { position: absolute; inset: 0; z-index: 7; background: #fff; opacity: 0; pointer-events: none; }
 
@@ -174,17 +211,19 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
   /* hyperspace phase */
   .intro.warping .crt-screen { opacity: 0; transition: opacity 0.2s; }
   .intro.warping .warp { opacity: 1; }
-  .intro.warping .t-old { animation: oldAway 0.85s ease-in forwards; }
-  .intro.warping .t-new { animation: newIn 1.05s 0.4s ease-out forwards; }
+  .intro.warping .t-old { animation: oldAway 0.7s cubic-bezier(0.7,0,0.84,0) forwards; }
+  .intro.warping .t-new { animation: newIn 1.0s 0.42s cubic-bezier(0.16,1,0.3,1) forwards; }
+  /* old solutions sucked into the vanishing point */
   @keyframes oldAway {
-    0% { opacity: 0.85; transform: scale(1); filter: blur(0); }
-    100% { opacity: 0; transform: scale(0.08); filter: blur(4px); }
+    0% { opacity: 0.9; transform: scale(1); filter: blur(0); }
+    100% { opacity: 0; transform: scale(0.02); filter: blur(6px); }
   }
+  /* newlifesolutions rushes out of the core toward the viewer */
   @keyframes newIn {
-    0% { opacity: 0; transform: scale(0.12); filter: blur(1px); }
-    45% { opacity: 1; transform: scale(1); filter: blur(0); }
-    80% { opacity: 1; transform: scale(1.15); }
-    100% { opacity: 0; transform: scale(2.6); filter: blur(3px); }
+    0% { opacity: 0; transform: scale(0.04); filter: blur(2px); letter-spacing: 0.4em; }
+    40% { opacity: 1; transform: scale(1); filter: blur(0); letter-spacing: 0.04em; }
+    78% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0; transform: scale(3.4); filter: blur(5px); }
   }
 
   /* arrival flash */
