@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/ui';
-import Scene3D from '../components/Scene3D.astro';
+import DualRealities from '../components/DualRealities.astro';
 import Intro from '../components/Intro.astro';
 interface Props { lang: Lang; title: string; description: string; }
 const { lang, title, description } = Astro.props;
@@ -113,7 +113,7 @@ const canonical = lang === 'es' ? `${site}/` : `${site}/en/`;
   </head>
   <body>
     <Intro lang={lang} />
-    <Scene3D />
+    <DualRealities />
     <slot />
     <script>
       // scroll reveal

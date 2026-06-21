@@ -1,0 +1,146 @@
+---
+// Background concept: "two realities converging into newlifesolutions".
+// LEFT  = the old/analog world: furniture drawn as warm old-school blueprint line-art
+//         (ties to CADlingua = drawings) with dimension ticks.
+// RIGHT = the new/digital world: a rain of technical glyphs (Ø R ± °, hex, data) — NOT
+//         Matrix-literal — bleeding over a faint control-panel grid, in cold teal.
+// They fade toward the center seam where the content lives. Pauses when hidden,
+// renders one static frame for prefers-reduced-motion.
+---
+<canvas id="dual" aria-hidden="true"></canvas>
+<div class="seam" aria-hidden="true"></div>
+
+<script>
+  const cv = document.getElementById('dual') as HTMLCanvasElement | null;
+  if (cv) {
+    const ctx = cv.getContext('2d')!;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let W = 0, H = 0, DPR = Math.min(devicePixelRatio || 1, 2);
+    const WARM = '#d9c7a3', WARM_DIM = 'rgba(217,199,163,', COLD = 'rgba(0,230,203,';
+
+    // --- old-world furniture as blueprint line sets (normalized 0..1 box) ---
+    type Seg = [number, number, number, number];
+    const chair: Seg[] = [[.2,.45,.8,.45],[.2,.45,.2,.95],[.8,.45,.8,.95],[.2,.45,.25,.05],[.8,.45,.75,.05],[.25,.05,.75,.05],[.2,.7,.8,.7]];
+    const table: Seg[] = [[.05,.3,.95,.3],[.05,.3,.05,.4],[.95,.3,.95,.4],[.15,.4,.18,.95],[.85,.4,.82,.95],[.12,.95,.2,.95],[.8,.95,.88,.95]];
+    const lamp: Seg[] = [[.5,.05,.3,.35],[.5,.05,.7,.35],[.3,.35,.7,.35],[.5,.35,.5,.85],[.32,.85,.68,.85],[.36,.85,.4,.95],[.64,.85,.6,.95]];
+    const armchair: Seg[] = [[.1,.4,.1,.9],[.1,.9,.9,.9],[.9,.4,.9,.9],[.1,.4,.28,.4],[.72,.4,.9,.4],[.28,.4,.28,.18],[.72,.4,.72,.18],[.28,.18,.72,.18],[.2,.9,.2,.98],[.8,.9,.8,.98],[.1,.62,.9,.62]];
+    const shapes = [chair, table, lamp, armchair];
+
+    type Item = { seg: Seg[]; x: number; y: number; s: number; vy: number; ph: number; };
+    let furniture: Item[] = [];
+    let cols: { x: number; y: number; sp: number; glyph: () => string; trail: string[] }[] = [];
+    const GL = ['Ø', 'R', '±', '°', '∅', '⌀', '0','1','x','A','M','#', '/', '·', '7','5','2'];
+    const gl = () => GL[(Math.random() * GL.length) | 0];
+
+    function build() {
+      furniture = [];
+      const n = Math.max(5, Math.round(W / 240));
+      for (let i = 0; i < n; i++) {
+        furniture.push({
+          seg: shapes[(Math.random() * shapes.length) | 0],
+          x: (W * 0.46) * Math.random(),       // left realm
+          y: Math.random() * H,
+          s: 90 + Math.random() * 130,
+          vy: 0.06 + Math.random() * 0.10,
+          ph: Math.random() * 6.28,
+        });
+      }
+      const step = 20;
+      cols = [];
+      for (let x = W * 0.5; x < W; x += step) {
+        cols.push({ x, y: Math.random() * H, sp: 1.1 + Math.random() * 2.4, glyph: gl, trail: [] });
+      }
+    }
+
+    function resize() {
+      W = innerWidth; H = innerHeight;
+      cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      build();
+    }
+    resize();
+    addEventListener('resize', resize);
+
+    function drawFurniture(t: number) {
+      ctx.lineWidth = 1;
+      for (const f of furniture) {
+        const y = (f.y + t * f.vy * 12) % (H + f.s) - f.s * 0.5;
+        const cx = f.x, fade = 1 - Math.min(1, cx / (W * 0.5)); // fade toward center
+        const a = 0.42 + 0.28 * fade;
+        ctx.lineWidth = 1.3;
+        ctx.strokeStyle = WARM_DIM + a + ')';
+        ctx.beginPath();
+        for (const [x1, y1, x2, y2] of f.seg) {
+          ctx.moveTo(cx + x1 * f.s, y + y1 * f.s);
+          ctx.lineTo(cx + x2 * f.s, y + y2 * f.s);
+        }
+        ctx.stroke();
+        // dimension tick (blueprint feel)
+        ctx.strokeStyle = WARM_DIM + (a * 0.6) + ')';
+        ctx.beginPath();
+        ctx.moveTo(cx - 8, y); ctx.lineTo(cx - 8, y + f.s);
+        ctx.moveTo(cx - 11, y); ctx.lineTo(cx - 5, y);
+        ctx.moveTo(cx - 11, y + f.s); ctx.lineTo(cx - 5, y + f.s);
+        ctx.stroke();
+      }
+    }
+
+    function drawRain() {
+      ctx.font = '13px "JetBrains Mono", monospace';
+      for (const c of cols) {
+        c.y += c.sp;
+        if (c.y > H + 20) { c.y = -20; c.trail = []; }
+        const fade = Math.min(1, (c.x - W * 0.5) / (W * 0.5)); // fade toward center
+        // head glyph (bright)
+        const g = c.glyph();
+        ctx.fillStyle = COLD + (0.65 + 0.3 * fade) + ')';
+        ctx.fillText(g, c.x, c.y);
+        c.trail.unshift(g);
+        if (c.trail.length > 14) c.trail.pop();
+        for (let i = 1; i < c.trail.length; i++) {
+          const a = (1 - i / c.trail.length) * 0.5 * fade;
+          ctx.fillStyle = COLD + a + ')';
+          ctx.fillText(c.trail[i], c.x, c.y - i * 16);
+        }
+      }
+    }
+
+    function controlPanel() {
+      // faint control-panel grid on the right, behind the rain
+      const x0 = W * 0.62, gridA = 'rgba(0,230,203,0.05)';
+      ctx.strokeStyle = gridA; ctx.lineWidth = 1;
+      for (let x = x0; x < W; x += 52) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+      for (let y = 0; y < H; y += 52) { ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(W, y); ctx.stroke(); }
+    }
+
+    let raf = 0, running = true;
+    let t = 0;
+    function frame() {
+      t += 1;
+      ctx.clearRect(0, 0, W, H);
+      controlPanel();
+      drawFurniture(t);
+      drawRain();
+      if (running) raf = requestAnimationFrame(frame);
+    }
+
+    if (reduce) { ctx.clearRect(0, 0, W, H); controlPanel(); drawFurniture(0); drawRain(); }
+    else {
+      frame();
+      document.addEventListener('visibilitychange', () => {
+        running = !document.hidden;
+        if (running) frame(); else cancelAnimationFrame(raf);
+      });
+    }
+  }
+</script>
+
+<style>
+  #dual { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
+  /* convergence seam: a soft glowing column down the center where the two worlds meet */
+  .seam {
+    position: fixed; top: 0; bottom: 0; left: 50%; width: 320px; transform: translateX(-50%);
+    z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse 50% 60% at 50% 40%, rgba(0,230,203,0.10), transparent 70%);
+    mix-blend-mode: screen;
+  }
+</style>
