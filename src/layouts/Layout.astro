@@ -1,5 +1,6 @@
 ---
 import type { Lang } from '../i18n/ui';
+import Scene3D from '../components/Scene3D.astro';
 interface Props { lang: Lang; title: string; description: string; }
 const { lang, title, description } = Astro.props;
 const site = 'https://www.newlifesolutions.dev';
@@ -53,6 +54,8 @@ const canonical = lang === 'es' ? `${site}/` : `${site}/en/`;
       }
       a { color: inherit; text-decoration: none; }
       .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+      /* content sits above the fixed 3D canvas */
+      body > header, body > main, body > footer { position: relative; z-index: 1; }
       .mono { font-family: var(--mono); }
       .accent { color: var(--accent); }
       .btn {
@@ -73,6 +76,7 @@ const canonical = lang === 'es' ? `${site}/` : `${site}/en/`;
     </style>
   </head>
   <body>
+    <Scene3D />
     <slot />
   </body>
 </html>

@@ -31,7 +31,6 @@ const contact = 'mailto:hola@newlifesolutions.dev';
         <a href={contact} class="btn btn-ghost">{t('hero.cta2')}</a>
       </div>
     </div>
-    <div class="grid-bg" aria-hidden="true"></div>
   </section>
 
   <!-- FLAGSHIP: CADlingua -->
@@ -101,12 +100,6 @@ const contact = 'mailto:hola@newlifesolutions.dev';
     letter-spacing: -0.03em; margin: 18px 0 22px; max-width: 16ch; }
   .hero-sub { font-size: clamp(1.05rem, 2vw, 1.3rem); color: var(--ink-dim); max-width: 56ch; }
   .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 34px; }
-  .grid-bg { position: absolute; inset: 0; z-index: -1; opacity: 0.5;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 46px 46px;
-    mask-image: radial-gradient(ellipse 70% 60% at 70% 0%, #000 30%, transparent 75%); }
 
   .flagship { background: var(--bg-soft); border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line); }
@@ -126,6 +119,7 @@ const contact = 'mailto:hola@newlifesolutions.dev';
   .feat h3 { font-size: 1rem; margin-bottom: 6px; }
   .feat p { font-size: 0.9rem; color: var(--ink-dim); }
 
+  .more { background: var(--bg); }
   .more-inner { display: flex; align-items: center; gap: 28px; }
   .more-card.future { width: 84px; height: 84px; flex: none; border-radius: var(--radius);
     border: 1px dashed var(--line); display: grid; place-items: center; color: var(--ink-dim);
@@ -133,12 +127,12 @@ const contact = 'mailto:hola@newlifesolutions.dev';
   .more h2 { font-size: 1.5rem; margin-bottom: 6px; }
   .more p { color: var(--ink-dim); max-width: 52ch; }
 
-  .cta { text-align: center; }
+  .cta { text-align: center; background: var(--bg); }
   .cta-inner h2 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); letter-spacing: -0.02em;
     max-width: 24ch; margin: 0 auto 12px; }
   .cta-inner p { color: var(--ink-dim); max-width: 50ch; margin: 0 auto 26px; }
 
-  .footer { border-top: 1px solid var(--line); padding: 34px 0; }
+  .footer { border-top: 1px solid var(--line); padding: 34px 0; background: var(--bg); }
   .footer-inner { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center;
     justify-content: space-between; color: var(--ink-dim); font-size: 0.88rem; }
   .ink-dim { color: var(--ink-dim); }
