@@ -2,10 +2,61 @@
 import type { Lang } from '../i18n/ui';
 import Scene3D from '../components/Scene3D.astro';
 import Intro from '../components/Intro.astro';
+import { useTranslations } from '../i18n/utils';
 interface Props { lang: Lang; title: string; description: string; }
 const { lang, title, description } = Astro.props;
 const site = 'https://www.newlifesolutions.dev';
 const canonical = lang === 'es' ? `${site}/` : `${site}/en/`;
+const ogImage = `${site}/og.png`;
+const ogLocale = lang === 'es' ? 'es_ES' : 'en_US';
+const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_ES';
+const inLang = lang === 'es' ? 'es-ES' : 'en';
+const t = useTranslations(lang);
+
+// Structured data (JSON-LD), built from the real on-page strings so every fact is true.
+// Drives GEO (ChatGPT/Claude/Perplexity fact extraction) + SEO rich results.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${site}/#org`,
+      name: 'newlife',
+      alternateName: 'New Life Solution',
+      url: `${site}/`,
+      logo: ogImage,
+      image: ogImage,
+      email: 'hola@newlifesolutions.dev',
+      description: t('meta.desc'),
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${site}/#website`,
+      url: `${site}/`,
+      name: 'newlife',
+      description: t('meta.desc'),
+      inLanguage: inLang,
+      publisher: { '@id': `${site}/#org` },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${site}/#cadlingua`,
+      name: 'CADlingua',
+      applicationCategory: 'DesignApplication',
+      operatingSystem: 'Web',
+      url: `${canonical}#cadlingua`,
+      inLanguage: inLang,
+      description: t('flag.body'),
+      featureList: [
+        `${t('flag.f1.t')}: ${t('flag.f1.d')}`,
+        `${t('flag.f2.t')}: ${t('flag.f2.d')}`,
+        `${t('flag.f3.t')}: ${t('flag.f3.d')}`,
+        `${t('flag.f4.t')}: ${t('flag.f4.d')}`,
+      ],
+      provider: { '@id': `${site}/#org` },
+    },
+  ],
+};
 ---
 <!doctype html>
 <html lang={lang}>
@@ -18,11 +69,23 @@ const canonical = lang === 'es' ? `${site}/` : `${site}/en/`;
     <link rel="alternate" hreflang="es" href={`${site}/`} />
     <link rel="alternate" hreflang="en" href={`${site}/en/`} />
     <link rel="alternate" hreflang="x-default" href={`${site}/`} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="generator" content="Astro" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="newlife" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={ogLocaleAlt} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="newlife — CADlingua: traduce planos técnicos sin tocar las cotas" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <meta name="theme-color" content="#07080c" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -34,6 +97,7 @@ const canonical = lang === 'es' ? `${site}/` : `${site}/en/`;
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230a0b0f'/%3E%3Ctext x='50' y='70' font-size='62' text-anchor='middle' fill='%2300e0c6' font-family='monospace'%3En%3C/text%3E%3C/svg%3E"
     />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <slot name="head" />
     <style is:global>
       :root {
