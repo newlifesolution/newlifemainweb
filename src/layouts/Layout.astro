@@ -1,0 +1,78 @@
+---
+import type { Lang } from '../i18n/ui';
+interface Props { lang: Lang; title: string; description: string; }
+const { lang, title, description } = Astro.props;
+const site = 'https://www.newlifesolutions.dev';
+const canonical = lang === 'es' ? `${site}/` : `${site}/en/`;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="es" href={`${site}/`} />
+    <link rel="alternate" hreflang="en" href={`${site}/en/`} />
+    <link rel="alternate" hreflang="x-default" href={`${site}/`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230a0b0f'/%3E%3Ctext x='50' y='70' font-size='62' text-anchor='middle' fill='%2300e0c6' font-family='monospace'%3En%3C/text%3E%3C/svg%3E"
+    />
+    <slot name="head" />
+    <style is:global>
+      :root {
+        --bg: #0a0b0f;
+        --bg-soft: #11131a;
+        --panel: #14161f;
+        --line: rgba(255, 255, 255, 0.08);
+        --ink: #eef0f4;
+        --ink-dim: #9aa0ad;
+        --accent: #00e0c6;
+        --accent-soft: rgba(0, 224, 198, 0.12);
+        --radius: 16px;
+        --maxw: 1080px;
+        --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+        --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      a { color: inherit; text-decoration: none; }
+      .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+      .mono { font-family: var(--mono); }
+      .accent { color: var(--accent); }
+      .btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 12px 22px; border-radius: 999px; font-weight: 600; font-size: 0.95rem;
+        transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+      }
+      .btn-primary { background: var(--accent); color: #04201c; }
+      .btn-primary:hover { transform: translateY(-2px); }
+      .btn-ghost { border: 1px solid var(--line); color: var(--ink); }
+      .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+      .eyebrow {
+        font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.22em;
+        text-transform: uppercase; color: var(--accent);
+      }
+      section { padding: 92px 0; }
+      @media (max-width: 640px) { section { padding: 60px 0; } }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

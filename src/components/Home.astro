@@ -1,0 +1,154 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const other = lang === 'es' ? { href: '/en/', label: 'EN' } : { href: '/', label: 'ES' };
+const year = 2026;
+const contact = 'mailto:hola@newlifesolutions.dev';
+---
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href={lang === 'es' ? '/' : '/en/'} class="brand mono">newlife<span class="accent">.</span></a>
+    <nav class="nav-links">
+      <a href="#cadlingua">{t('nav.flagship')}</a>
+      <a href={contact} class="btn btn-ghost btn-sm">{t('nav.cta')}</a>
+      <a href={other.href} class="lang mono" aria-label={`Switch to ${other.label}`}>{other.label}</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">{t('hero.eyebrow')}</p>
+      <h1>{t('hero.h1')}</h1>
+      <p class="hero-sub">{t('hero.sub')}</p>
+      <div class="hero-cta">
+        <a href="#cadlingua" class="btn btn-primary">{t('hero.cta1')} →</a>
+        <a href={contact} class="btn btn-ghost">{t('hero.cta2')}</a>
+      </div>
+    </div>
+    <div class="grid-bg" aria-hidden="true"></div>
+  </section>
+
+  <!-- FLAGSHIP: CADlingua -->
+  <section id="cadlingua" class="flagship">
+    <div class="wrap flag-grid">
+      <div class="flag-copy">
+        <span class="flag-badge mono">{t('flag.badge')}</span>
+        <h2>{t('flag.name')}</h2>
+        <p class="flag-tagline">{t('flag.tagline')}</p>
+        <p class="flag-body">{t('flag.body')}</p>
+        <div class="hero-cta">
+          <a href={contact} class="btn btn-primary">{t('flag.cta')} →</a>
+          <span class="soon mono">● {t('flag.soon')}</span>
+        </div>
+      </div>
+      <div class="flag-features">
+        <div class="feat"><h3>{t('flag.f1.t')}</h3><p>{t('flag.f1.d')}</p></div>
+        <div class="feat"><h3>{t('flag.f2.t')}</h3><p>{t('flag.f2.d')}</p></div>
+        <div class="feat"><h3>{t('flag.f3.t')}</h3><p>{t('flag.f3.d')}</p></div>
+        <div class="feat"><h3>{t('flag.f4.t')}</h3><p>{t('flag.f4.d')}</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MORE COMING -->
+  <section class="more">
+    <div class="wrap more-inner">
+      <div class="more-card future" aria-hidden="true"><span class="mono">+</span></div>
+      <div>
+        <h2>{t('more.title')}</h2>
+        <p>{t('more.body')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="wrap cta-inner">
+      <h2>{t('cta.title')}</h2>
+      <p>{t('cta.body')}</p>
+      <a href={contact} class="btn btn-primary">{t('cta.button')} →</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span class="brand mono">newlife<span class="accent">.</span></span>
+    <span class="ftag">{t('footer.tagline')}</span>
+    <span class="ink-dim">© {year} newlife — {t('footer.rights')}</span>
+  </div>
+</footer>
+
+<style>
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
+    background: rgba(10, 11, 15, 0.7); border-bottom: 1px solid var(--line); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+  .nav-links { display: flex; align-items: center; gap: 20px; }
+  .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
+  .lang { font-size: 0.8rem; color: var(--ink-dim); border: 1px solid var(--line);
+    border-radius: 8px; padding: 4px 9px; transition: color .15s, border-color .15s; }
+  .lang:hover { color: var(--accent); border-color: var(--accent); }
+
+  .hero { position: relative; padding-top: 110px; padding-bottom: 110px; overflow: hidden; }
+  .hero h1 { font-size: clamp(2.3rem, 6vw, 4rem); font-weight: 700; line-height: 1.08;
+    letter-spacing: -0.03em; margin: 18px 0 22px; max-width: 16ch; }
+  .hero-sub { font-size: clamp(1.05rem, 2vw, 1.3rem); color: var(--ink-dim); max-width: 56ch; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 34px; }
+  .grid-bg { position: absolute; inset: 0; z-index: -1; opacity: 0.5;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(ellipse 70% 60% at 70% 0%, #000 30%, transparent 75%); }
+
+  .flagship { background: var(--bg-soft); border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line); }
+  .flag-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
+  .flag-badge { display: inline-block; font-size: 0.72rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent); background: var(--accent-soft);
+    padding: 5px 12px; border-radius: 999px; }
+  .flag-copy h2 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em;
+    margin: 16px 0 8px; }
+  .flag-tagline { font-size: 1.2rem; color: var(--ink); font-weight: 500; margin-bottom: 16px; }
+  .flag-body { color: var(--ink-dim); max-width: 52ch; }
+  .soon { font-size: 0.78rem; color: var(--accent); letter-spacing: 0.04em; }
+  .flag-features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .feat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px; transition: border-color .15s, transform .15s; }
+  .feat:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .feat h3 { font-size: 1rem; margin-bottom: 6px; }
+  .feat p { font-size: 0.9rem; color: var(--ink-dim); }
+
+  .more-inner { display: flex; align-items: center; gap: 28px; }
+  .more-card.future { width: 84px; height: 84px; flex: none; border-radius: var(--radius);
+    border: 1px dashed var(--line); display: grid; place-items: center; color: var(--ink-dim);
+    font-size: 2rem; }
+  .more h2 { font-size: 1.5rem; margin-bottom: 6px; }
+  .more p { color: var(--ink-dim); max-width: 52ch; }
+
+  .cta { text-align: center; }
+  .cta-inner h2 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); letter-spacing: -0.02em;
+    max-width: 24ch; margin: 0 auto 12px; }
+  .cta-inner p { color: var(--ink-dim); max-width: 50ch; margin: 0 auto 26px; }
+
+  .footer { border-top: 1px solid var(--line); padding: 34px 0; }
+  .footer-inner { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center;
+    justify-content: space-between; color: var(--ink-dim); font-size: 0.88rem; }
+  .ink-dim { color: var(--ink-dim); }
+
+  @media (max-width: 820px) {
+    .flag-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 520px) {
+    .flag-features { grid-template-columns: 1fr; }
+    .nav-links { gap: 12px; }
+    .nav-links a[href="#cadlingua"] { display: none; }
+  }
+</style>
