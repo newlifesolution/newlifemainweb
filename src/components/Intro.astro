@@ -1,7 +1,11 @@
 ---
-// CRT-TV intro overlay: animated static/interference. On click/tap/swipe the picture
-// collapses like an old cathode-ray TV powering off → white flash "BAM" → reveals the site.
-// Shows once per session. Skipped for prefers-reduced-motion. Safety auto-enter after 9s.
+// CRT-TV intro → hyperspace jump → site.
+// 1) Old cathode-ray TV with static/interference (the "old solutions" era).
+// 2) On click/tap/swipe: CRT power-off collapse to a point.
+// 3) Hyperspace tunnel (Star-Wars-style star streaks) while "old solutions" flies away
+//    and "newlifesolutions" rushes in.
+// 4) White flash → reveal the site.
+// Once per session. Skipped for prefers-reduced-motion. Safety auto-enter after 9s.
 import type { Lang } from '../i18n/ui';
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
@@ -13,10 +17,15 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
     <canvas id="crt-noise"></canvas>
     <div class="crt-content">
       <div class="crt-sig mono">▚ {signal}</div>
-      <div class="crt-brand mono" data-text="newlife">newlife<span class="cur">_</span></div>
+      <div class="crt-brand mono">old solutions<span class="cur">_</span></div>
       <div class="crt-prompt mono">{prompt}</div>
     </div>
     <div class="crt-bar" aria-hidden="true"></div>
+  </div>
+  <canvas id="warp" class="warp" aria-hidden="true"></canvas>
+  <div class="warp-text" aria-hidden="true">
+    <span class="t-old mono">old solutions</span>
+    <span class="t-new mono">newlife<span class="accent">solutions</span></span>
   </div>
   <div class="crt-flash" aria-hidden="true"></div>
 </div>
@@ -30,20 +39,54 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
       intro.remove();
     } else {
       document.documentElement.style.overflow = 'hidden';
-      const cv = document.getElementById('crt-noise') as HTMLCanvasElement;
-      const ctx = cv.getContext('2d')!;
-      cv.width = 240; cv.height = 135;
+      const noiseC = document.getElementById('crt-noise') as HTMLCanvasElement;
+      const nctx = noiseC.getContext('2d')!;
+      noiseC.width = 240; noiseC.height = 135;
       const drawNoise = () => {
-        const img = ctx.createImageData(cv.width, cv.height);
+        const img = nctx.createImageData(noiseC.width, noiseC.height);
         const d = img.data;
         for (let i = 0; i < d.length; i += 4) {
           const v = (Math.random() * 255) | 0;
           d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255;
         }
-        ctx.putImageData(img, 0, 0);
+        nctx.putImageData(img, 0, 0);
       };
       const noiseId = window.setInterval(drawNoise, 38);
       drawNoise();
+
+      // --- hyperspace tunnel ---
+      const warp = document.getElementById('warp') as HTMLCanvasElement;
+      const wctx = warp.getContext('2d')!;
+      let W = 0, H = 0, CX = 0, CY = 0;
+      const sizeWarp = () => { W = warp.width = window.innerWidth; H = warp.height = window.innerHeight; CX = W / 2; CY = H / 2; };
+      sizeWarp();
+      window.addEventListener('resize', sizeWarp);
+      const N = 460;
+      const mk = () => ({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() * 0.9 + 0.25, pz: 0 });
+      const stars = Array.from({ length: N }, mk);
+
+      function hyperspace(duration: number, onDone: () => void) {
+        const start = performance.now();
+        const step = (now: number) => {
+          const t = Math.min(1, (now - start) / duration);
+          const speed = 0.006 + t * t * 0.075;
+          const k = Math.min(W, H) * 0.55;
+          wctx.fillStyle = 'rgba(5,5,7,0.34)';
+          wctx.fillRect(0, 0, W, H);
+          for (const s of stars) {
+            s.pz = s.z; s.z -= speed;
+            if (s.z <= 0.03) { Object.assign(s, mk()); s.z = 1.15; s.pz = 1.15; }
+            const sx = CX + (s.x / s.z) * k, sy = CY + (s.y / s.z) * k;
+            const px = CX + (s.x / s.pz) * k, py = CY + (s.y / s.pz) * k;
+            const a = Math.min(1, 1 - s.z);
+            wctx.strokeStyle = `rgba(${170 + a * 70 | 0},255,${245},${a})`;
+            wctx.lineWidth = Math.max(1, (1 - s.z) * 2.6);
+            wctx.beginPath(); wctx.moveTo(px, py); wctx.lineTo(sx, sy); wctx.stroke();
+          }
+          if (t < 1) requestAnimationFrame(step); else onDone();
+        };
+        requestAnimationFrame(step);
+      }
 
       let entered = false;
       const enter = () => {
@@ -51,12 +94,18 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
         entered = true;
         window.clearInterval(noiseId);
         sessionStorage.setItem('nl_intro_seen', '1');
-        intro.classList.add('off');
+        intro.classList.add('off'); // CRT collapse to a point
         window.setTimeout(() => {
-          document.documentElement.style.overflow = '';
-          intro.remove();
-          document.dispatchEvent(new Event('intro:done'));
-        }, 660);
+          intro.classList.add('warping'); // fade CRT out, run tunnel + text morph
+          hyperspace(1150, () => {
+            intro.classList.add('arrive'); // white flash "BAM"
+            window.setTimeout(() => {
+              document.documentElement.style.overflow = '';
+              intro.remove();
+              document.dispatchEvent(new Event('intro:done'));
+            }, 240);
+          });
+        }, 360);
       };
 
       intro.addEventListener('pointerdown', enter);
@@ -65,62 +114,44 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
       });
       let ty = 0;
       intro.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; }, { passive: true });
-      intro.addEventListener('touchmove', (e) => {
-        if (Math.abs(e.touches[0].clientY - ty) > 26) enter();
-      }, { passive: true });
+      intro.addEventListener('touchmove', (e) => { if (Math.abs(e.touches[0].clientY - ty) > 26) enter(); }, { passive: true });
       intro.focus();
-      window.setTimeout(enter, 9000); // safety auto-enter
+      window.setTimeout(enter, 9000);
     }
   }
 </script>
 
 <style>
-  .intro {
-    position: fixed; inset: 0; z-index: 9999;
-    background: #050507; cursor: pointer; overflow: hidden;
-    display: grid; place-items: center;
-  }
-  .crt-screen {
-    position: absolute; inset: 0; transform-origin: center center;
-    animation: flicker 0.13s steps(2) infinite;
-  }
-  #crt-noise {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    image-rendering: pixelated; opacity: 0.28;
-  }
-  /* scanlines */
-  .crt-screen::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none;
+  .intro { position: fixed; inset: 0; z-index: 9999; background: #050507; cursor: pointer;
+    overflow: hidden; display: grid; place-items: center; }
+  .crt-screen { position: absolute; inset: 0; transform-origin: center center;
+    animation: flicker 0.13s steps(2) infinite; box-shadow: inset 0 0 160px rgba(0,0,0,0.9); }
+  #crt-noise { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; opacity: 0.28; }
+  .crt-screen::after { content: ''; position: absolute; inset: 0; pointer-events: none;
     background: repeating-linear-gradient(0deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,0.45) 3px);
-    mix-blend-mode: multiply;
-  }
-  /* vignette / tube curvature feel */
-  .crt-screen::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3;
-    background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 55%, rgba(0,0,0,0.85) 100%);
-  }
-  .crt-content {
-    position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 24px;
-  }
-  .crt-sig { color: #00e0c6; font-size: 0.78rem; letter-spacing: 0.4em; opacity: 0.7;
-    animation: blink 1.1s steps(2) infinite; }
-  .crt-brand {
-    font-size: clamp(2.6rem, 11vw, 6rem); font-weight: 700; letter-spacing: -0.02em; color: #eef0f4;
-    text-shadow: 2px 0 rgba(255,0,80,0.7), -2px 0 rgba(0,224,255,0.7);
-    animation: rgbshift 2.2s steps(12) infinite;
-  }
+    mix-blend-mode: multiply; }
+  .crt-screen::before { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3;
+    background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 52%, rgba(0,0,0,0.9) 100%); }
+  .crt-content { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 24px; }
+  .crt-sig { color: #00e0c6; font-size: 0.78rem; letter-spacing: 0.4em; opacity: 0.7; animation: blink 1.1s steps(2) infinite; }
+  .crt-brand { font-size: clamp(2rem, 9vw, 5rem); font-weight: 700; letter-spacing: -0.01em; color: #eef0f4;
+    text-shadow: 2px 0 rgba(255,0,80,0.7), -2px 0 rgba(0,224,255,0.7); animation: rgbshift 2.2s steps(12) infinite; }
   .crt-brand .cur { color: #00e0c6; animation: blink 0.7s steps(2) infinite; }
   .crt-prompt { color: #cfd3da; font-size: 0.8rem; letter-spacing: 0.32em;
-    border: 1px solid rgba(255,255,255,0.25); padding: 9px 16px; border-radius: 4px;
-    animation: blink 1.4s steps(2) infinite; }
-  /* rolling interference bar */
-  .crt-bar {
-    position: absolute; left: 0; right: 0; height: 18%; z-index: 1; pointer-events: none;
+    border: 1px solid rgba(255,255,255,0.25); padding: 9px 16px; border-radius: 4px; animation: blink 1.4s steps(2) infinite; }
+  .crt-bar { position: absolute; left: 0; right: 0; height: 18%; z-index: 1; pointer-events: none;
     background: linear-gradient(180deg, transparent, rgba(255,255,255,0.07) 45%, rgba(255,255,255,0.12) 50%, transparent);
-    animation: roll 5.5s linear infinite;
-  }
-  .crt-flash { position: absolute; inset: 0; z-index: 5; background: #fff; opacity: 0; pointer-events: none; }
+    animation: roll 5.5s linear infinite; }
+
+  .warp { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 4; opacity: 0; transition: opacity 0.25s ease; }
+  .warp-text { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; pointer-events: none; }
+  .warp-text span.t-old, .warp-text span.t-new { grid-area: 1 / 1; font-weight: 700; white-space: nowrap;
+    letter-spacing: 0.04em; opacity: 0; }
+  .t-old { font-size: clamp(1.4rem, 6vw, 3rem); color: #aeb6c2; }
+  .t-new { font-size: clamp(1.6rem, 7vw, 3.6rem); color: #eef0f4; }
+  .t-new .accent { color: #00e0c6; }
+  .crt-flash { position: absolute; inset: 0; z-index: 7; background: #fff; opacity: 0; pointer-events: none; }
 
   @keyframes flicker { 0% { opacity: 0.97; } 100% { opacity: 1; } }
   @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.25; } }
@@ -130,22 +161,33 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
     50% { text-shadow: -3px 0 rgba(255,0,80,0.7), 3px 0 rgba(0,224,255,0.7); }
   }
 
-  /* --- CRT power-off collapse on enter --- */
+  /* CRT power-off collapse */
   .intro.off { pointer-events: none; }
-  .intro.off .crt-screen { animation: crtCollapse 0.55s cubic-bezier(0.6, 0, 0.4, 1) forwards; }
-  .intro.off .crt-flash { animation: flashBang 0.62s ease-out forwards; }
-
+  .intro.off .crt-screen { animation: crtCollapse 0.5s cubic-bezier(0.6, 0, 0.4, 1) forwards; }
   @keyframes crtCollapse {
-    0%   { transform: scaleX(1) scaleY(1);     filter: brightness(1) contrast(1); }
-    45%  { transform: scaleX(1) scaleY(0.018);  filter: brightness(2.6) contrast(1.5); }
-    60%  { transform: scaleX(0.7) scaleY(0.018); filter: brightness(4); }
-    78%  { transform: scaleX(0) scaleY(0.018);  filter: brightness(7); }
-    79%  { transform: scaleX(0) scaleY(0); }
+    0%   { transform: scaleX(1) scaleY(1); filter: brightness(1); }
+    50%  { transform: scaleX(1) scaleY(0.016); filter: brightness(3); }
+    80%  { transform: scaleX(0.05) scaleY(0.016); filter: brightness(7); }
     100% { transform: scaleX(0) scaleY(0); opacity: 0; }
   }
-  @keyframes flashBang {
-    0%, 52% { opacity: 0; }
-    66% { opacity: 0.95; }
-    100% { opacity: 0; }
+
+  /* hyperspace phase */
+  .intro.warping .crt-screen { opacity: 0; transition: opacity 0.2s; }
+  .intro.warping .warp { opacity: 1; }
+  .intro.warping .t-old { animation: oldAway 0.85s ease-in forwards; }
+  .intro.warping .t-new { animation: newIn 1.05s 0.4s ease-out forwards; }
+  @keyframes oldAway {
+    0% { opacity: 0.85; transform: scale(1); filter: blur(0); }
+    100% { opacity: 0; transform: scale(0.08); filter: blur(4px); }
   }
+  @keyframes newIn {
+    0% { opacity: 0; transform: scale(0.12); filter: blur(1px); }
+    45% { opacity: 1; transform: scale(1); filter: blur(0); }
+    80% { opacity: 1; transform: scale(1.15); }
+    100% { opacity: 0; transform: scale(2.6); filter: blur(3px); }
+  }
+
+  /* arrival flash */
+  .intro.arrive .crt-flash { animation: flashBang 0.4s ease-out forwards; }
+  @keyframes flashBang { 0% { opacity: 0; } 28% { opacity: 0.95; } 100% { opacity: 0; } }
 </style>
