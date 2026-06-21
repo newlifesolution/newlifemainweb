@@ -7,6 +7,7 @@ const t = useTranslations(lang);
 const other = lang === 'es' ? { href: '/en/', label: 'EN' } : { href: '/', label: 'ES' };
 const year = 2026;
 const contact = 'mailto:hola@newlifesolutions.dev';
+const cadlinguaApp = 'https://cadlingua.greenmeadow-544f17c7.westeurope.azurecontainerapps.io';
 const feats = [
   { k: 'flag.f1', icon: 'M3 17 L9 11 L13 15 L21 7 M21 7 L21 12 M21 7 L16 7' }, // dimension/measure
   { k: 'flag.f2', icon: 'M4 5 H20 V19 H4 Z M4 9 H20 M8 5 V9' },                  // file/format
@@ -19,7 +20,7 @@ const feats = [
     <a href={lang === 'es' ? '/' : '/en/'} class="brand"><span class="dot"></span>newlife<span class="accent">.</span></a>
     <nav class="nav-links">
       <a href="#cadlingua" class="nav-a">{t('nav.flagship')}</a>
-      <a href={contact} class="btn btn-ghost btn-sm">{t('nav.cta')}</a>
+      <a href={cadlinguaApp} target="_blank" rel="noopener" class="btn btn-ghost btn-sm">{t('nav.cta')}</a>
       <a href={other.href} class="lang mono" aria-label={`Switch to ${other.label}`}>{other.label}</a>
     </nav>
   </div>
@@ -59,7 +60,7 @@ const feats = [
         <p class="flag-tagline">{t('flag.tagline')}</p>
         <p class="flag-body">{t('flag.body')}</p>
         <div class="hero-cta">
-          <a href={contact} class="btn btn-primary">{t('flag.cta')} →</a>
+          <a href={cadlinguaApp} target="_blank" rel="noopener" class="btn btn-primary">{t('flag.cta')} →</a>
           <span class="soon mono"><span class="pulse"></span>{t('flag.soon')}</span>
         </div>
       </div>
