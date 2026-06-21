@@ -1,0 +1,27 @@
+# newlife
+
+> newlife is a studio that designs and ships sharp technical software. Few tools, very sharp. The studio's first product is CADlingua, a tool that translates technical engineering drawings (DXF/DWG) into any language without altering their dimensions.
+
+newlife (also written "New Life Solution") builds focused engineering tools rather than generic software. The site is bilingual: Spanish (default, at `/`) and English (at `/en/`).
+
+## Flagship product: CADlingua
+
+CADlingua translates the text of a technical drawing into any target language while leaving every measurement, tolerance, symbol and part code untouched.
+
+The problem it solves: anyone can run a PDF through a translator, but a normal translator wrecks a CAD drawing — it mangles dimensions like Ø50 or R5, tolerances, and codes. CADlingua understands the drawing: it translates only the prose and leaves the geometry, dimensions, tolerances, symbols (Ø, °, ±) and codes intact.
+
+Key facts about CADlingua:
+- Input/output formats: DXF and DWG. You upload a drawing and get it back translated in the same format.
+- Dimensions, tolerances and drawing codes are preserved exactly (Ø50, R5, ±, °, etc.).
+- Supports any language, including non-Latin scripts: Cyrillic, Chinese/Japanese/Korean (CJK), Greek and Arabic.
+- Configurable per company: your own glossary, proper nouns to preserve, and code grammar.
+- Status: currently deploying (early access / request access).
+
+## Pages
+
+- [Home (Spanish)](https://www.newlifesolutions.dev/): the studio and CADlingua.
+- [Home (English)](https://www.newlifesolutions.dev/en/): the studio and CADlingua, in English.
+
+## Contact
+
+- Access requests and inquiries: hola@newlifesolutions.dev
