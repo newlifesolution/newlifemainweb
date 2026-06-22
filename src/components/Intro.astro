@@ -136,34 +136,43 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
       }
 
       let entered = false;
+      const onEnter = () => enter();
+      const onKey = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enter(); } };
+      const onTouch = () => enter();            // a TAP dismisses on mobile — reliable, no swipe threshold
+      const cleanup = () => {
+        // Single-fire: detach every trigger so the intro can NEVER re-arm or "reappear".
+        intro.removeEventListener('pointerdown', onEnter);
+        intro.removeEventListener('keydown', onKey);
+        intro.removeEventListener('touchstart', onTouch);
+        window.clearTimeout(safety);
+      };
       const enter = () => {
         if (entered) return;
         entered = true;
+        cleanup();
         window.clearInterval(noiseId);
         sessionStorage.setItem('nl_intro_seen', '1');
-        intro.classList.add('off'); // CRT collapse to a point
+        intro.classList.add('off'); // CRT collapse to a bright dot
+        // Start the tunnel WHILE the dot is still blooming → one continuous motion,
+        // no black gap (which read as "it went away then came back").
         window.setTimeout(() => {
-          intro.classList.add('warping'); // fade CRT out, run tunnel + text morph
-          hyperspace(2000, () => {
+          intro.classList.add('warping');
+          hyperspace(1300, () => {
             intro.classList.add('arrive'); // white flash "BAM"
             window.setTimeout(() => {
               document.documentElement.style.overflow = '';
               intro.remove();
               document.dispatchEvent(new Event('intro:done'));
-            }, 240);
+            }, 220);
           });
-        }, 620);
+        }, 470);
       };
 
-      intro.addEventListener('pointerdown', enter);
-      intro.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enter(); }
-      });
-      let ty = 0;
-      intro.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; }, { passive: true });
-      intro.addEventListener('touchmove', (e) => { if (Math.abs(e.touches[0].clientY - ty) > 26) enter(); }, { passive: true });
+      intro.addEventListener('pointerdown', onEnter);
+      intro.addEventListener('keydown', onKey);
+      intro.addEventListener('touchstart', onTouch, { passive: true });
       intro.focus();
-      window.setTimeout(enter, 9000);
+      const safety = window.setTimeout(enter, 7000);
     }
   }
 </script>
