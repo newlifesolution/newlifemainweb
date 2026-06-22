@@ -55,7 +55,7 @@ const feats = [
   <section id="cadlingua" class="flagship">
     <div class="wrap">
       <div class="flag-head" data-reveal>
-        <span class="flag-badge mono">{t('flag.badge')}</span>
+        <span class="flag-badge mono"><span class="sec-n">01</span>{t('flag.badge')}</span>
         <h2 class="flag-name">{t('flag.name')}</h2>
         <p class="flag-tagline">{t('flag.tagline')}</p>
         <p class="flag-body">{t('flag.body')}</p>
@@ -88,6 +88,7 @@ const feats = [
         <span class="slot mono">+</span>
       </div>
       <div class="more-copy">
+        <p class="eyebrow"><span class="sec-n">02</span>{t('more.eyebrow')}</p>
         <h2>{t('more.title')}</h2>
         <p>{t('more.body')}</p>
       </div>
@@ -97,6 +98,7 @@ const feats = [
   <!-- CTA -->
   <section class="cta">
     <div class="wrap cta-inner" data-reveal>
+      <p class="eyebrow cta-eyebrow"><span class="sec-n">03</span>{t('cta.eyebrow')}</p>
       <h2>{t('cta.title')}</h2>
       <p>{t('cta.body')}</p>
       <a href={contact} class="btn btn-primary">{t('cta.button')} →</a>
@@ -106,8 +108,14 @@ const feats = [
 
 <footer class="footer">
   <div class="wrap footer-inner">
-    <span class="brand"><span class="dot"></span>newlife<span class="accent">.</span></span>
-    <span class="ftag">{t('footer.tagline')}</span>
+    <div class="foot-left">
+      <span class="brand"><span class="dot"></span>newlife<span class="accent">.</span></span>
+      <span class="ftag">{t('footer.tagline')}</span>
+    </div>
+    <nav class="footer-links mono">
+      <a href={cadlinguaApp} target="_blank" rel="noopener">CADlingua</a>
+      <a href={contact}>hola@newlifesolutions.dev</a>
+    </nav>
     <span class="mono fcopy">© {year} newlife · {t('footer.rights')}</span>
   </div>
 </footer>
@@ -205,6 +213,17 @@ const feats = [
   .footer .brand { font-size: 1.1rem; }
   .ftag { color: var(--ink-dim); font-size: 0.9rem; }
   .fcopy { color: var(--ink-faint); font-size: 0.76rem; }
+
+  /* v0.9 cohesion: section index + consistent eyebrows + richer footer */
+  .sec-n { font-family: var(--mono); color: var(--accent); }
+  .flag-badge .sec-n { margin-right: 8px; opacity: 0.7; }
+  .more-copy .eyebrow { margin-bottom: 14px; }
+  .cta-eyebrow { margin-bottom: 16px; }
+  .cta-eyebrow::before { display: none; }       /* no leading rule when centered */
+  .foot-left { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .footer-links { display: flex; gap: 22px; font-size: 0.82rem; }
+  .footer-links a { color: var(--ink-dim); transition: color 0.15s; }
+  .footer-links a:hover { color: var(--accent); }
 
   @media (max-width: 860px) {
     .hero-grid { grid-template-columns: 1fr; gap: 34px; }

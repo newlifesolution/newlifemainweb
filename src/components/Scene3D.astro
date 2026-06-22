@@ -52,8 +52,9 @@
     // and pulled a touch forward so the few that remain actually read (not invisible).
     // The TorusKnot (the "Klein bottle" Imanol liked) stays.
     const parts: THREE.LineSegments[] = [
-      wire(new THREE.TorusKnotGeometry(1, 0.32, 90, 10), 4.6, 2.4, -2.6, 1.15),
-      wire(new THREE.TorusGeometry(1.3, 0.45, 10, 28), -5, -2.4, -5.2, 1.0),
+      // knot pushed up into the top-right CORNER so it frames, not collides with, the spec panel
+      wire(new THREE.TorusKnotGeometry(1, 0.32, 90, 10), 5.7, 3.7, -3.2, 1.05),
+      wire(new THREE.TorusGeometry(1.3, 0.45, 10, 28), -5.2, -2.7, -5.4, 1.0),
     ];
 
     // --- one subtle dimension line bracketing the box ---
