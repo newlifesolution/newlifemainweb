@@ -22,6 +22,8 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
     </div>
     <div class="crt-bar" aria-hidden="true"></div>
   </div>
+  <div class="crt-line" aria-hidden="true"></div>
+  <div class="crt-dot" aria-hidden="true"></div>
   <canvas id="warp" class="warp" aria-hidden="true"></canvas>
   <div class="warp-text" aria-hidden="true">
     <span class="t-old mono">old solutions</span>
@@ -150,7 +152,7 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
               document.dispatchEvent(new Event('intro:done'));
             }, 240);
           });
-        }, 360);
+        }, 620);
       };
 
       intro.addEventListener('pointerdown', enter);
@@ -208,14 +210,58 @@ const signal = lang === 'es' ? 'SEÑAL ENTRANTE' : 'INCOMING SIGNAL';
     50% { text-shadow: -3px 0 rgba(255,0,80,0.7), 3px 0 rgba(0,224,255,0.7); }
   }
 
-  /* CRT power-off collapse */
+  /* CRT power-off collapse — grounded in Android's ElectronBeam.java:
+     phase 1 = vertical squash to a line (~58%), phase 2 = horizontal snap to a dot
+     + white flash & bloom (~42%). Sigmoid-ish easing; RGB fringe = chromatic aberration;
+     P22 phosphor decays in ms, so the dot's afterglow is short. */
   .intro.off { pointer-events: none; }
-  .intro.off .crt-screen { animation: crtCollapse 0.5s cubic-bezier(0.6, 0, 0.4, 1) forwards; }
-  @keyframes crtCollapse {
-    0%   { transform: scaleX(1) scaleY(1); filter: brightness(1); }
-    50%  { transform: scaleX(1) scaleY(0.016); filter: brightness(3); }
-    80%  { transform: scaleX(0.05) scaleY(0.016); filter: brightness(7); }
-    100% { transform: scaleX(0) scaleY(0); opacity: 0; }
+  .intro.off .crt-screen { animation: crtSquash 0.62s cubic-bezier(0.7, 0, 0.3, 1) forwards; }
+  @keyframes crtSquash {
+    0%   { transform: scaleY(1) scaleX(1);      filter: brightness(1) saturate(1) contrast(1); }
+    44%  { transform: scaleY(0.06) scaleX(1.04); filter: brightness(2.1) saturate(1.4) contrast(1.2); }
+    56%  { transform: scaleY(0.004) scaleX(1.06); filter: brightness(2.8) saturate(1.6); opacity: 1; }
+    62%  { opacity: 0; transform: scaleY(0.004) scaleX(1.06); }
+    100% { opacity: 0; transform: scaleY(0) scaleX(1); }
+  }
+
+  /* the electron beam concentrating: bright full-width line -> dot, with bloom flash.
+     box-shadow carries an R/cyan vertical fringe (cheap chromatic aberration). */
+  .crt-line {
+    position: absolute; left: 0; right: 0; top: 50%; height: 3px; z-index: 6;
+    transform: translateY(-50%) scaleX(1) scaleY(1); transform-origin: center center;
+    background: #fff; opacity: 0; pointer-events: none; border-radius: 2px;
+  }
+  .intro.off .crt-line { animation: beamLine 0.62s cubic-bezier(0.7, 0, 0.3, 1) forwards; }
+  @keyframes beamLine {
+    0%, 50% { opacity: 0; transform: translateY(-50%) scaleX(1) scaleY(0.5);
+              box-shadow: 0 0 8px 1px rgba(255,255,255,0.5),
+                          0 -2px 0 rgba(255,40,80,0.45), 0 2px 0 rgba(40,200,255,0.45); }
+    56%     { opacity: 1; transform: translateY(-50%) scaleX(1) scaleY(1);
+              box-shadow: 0 0 22px 3px rgba(255,255,255,0.85),
+                          0 -3px 0 rgba(255,40,80,0.6), 0 3px 0 rgba(40,200,255,0.6); }
+    70%     { opacity: 1; transform: translateY(-50%) scaleX(0.55) scaleY(1.1);
+              box-shadow: 0 0 26px 4px rgba(255,255,255,0.9); }
+    82%     { opacity: 0.5; transform: translateY(-50%) scaleX(0.18) scaleY(1.1);
+              box-shadow: 0 0 20px 3px rgba(255,255,255,0.7); }
+    100%    { opacity: 0; transform: translateY(-50%) scaleX(0.06) scaleY(0.8);
+              box-shadow: 0 0 12px 2px rgba(255,255,255,0); }
+  }
+
+  /* the final beam dot: a small round element (uniform scale -> bloom isn't crushed)
+     that flashes white-hot with a teal halo as the line vanishes, then fades fast. */
+  .crt-dot {
+    position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; z-index: 6;
+    border-radius: 50%; background: #fff; opacity: 0; pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+  .intro.off .crt-dot { animation: beamDot 0.62s cubic-bezier(0.7, 0, 0.3, 1) forwards; }
+  @keyframes beamDot {
+    0%, 68% { opacity: 0; transform: translate(-50%,-50%) scale(0.2);
+              box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+    84%     { opacity: 1; transform: translate(-50%,-50%) scale(1.1);
+              box-shadow: 0 0 55px 16px rgba(255,255,255,1), 0 0 150px 54px rgba(0,230,203,0.5); }
+    100%    { opacity: 0; transform: translate(-50%,-50%) scale(0.5);
+              box-shadow: 0 0 22px 4px rgba(255,255,255,0), 0 0 60px 10px rgba(0,230,203,0); }
   }
 
   /* hyperspace phase */
