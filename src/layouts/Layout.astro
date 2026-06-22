@@ -11,6 +11,9 @@ const ogImage = `${site}/og.png`;
 const ogLocale = lang === 'es' ? 'es_ES' : 'en_US';
 const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_ES';
 const inLang = lang === 'es' ? 'es-ES' : 'en';
+const ogAlt = lang === 'es'
+  ? 'newlife — CADlingua: traduce planos técnicos sin tocar las cotas'
+  : 'newlife — CADlingua: translate technical drawings without touching the dimensions';
 const t = useTranslations(lang);
 
 // Structured data (JSON-LD), built from the real on-page strings so every fact is true.
@@ -81,7 +84,7 @@ const jsonLd = {
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="newlife — CADlingua: traduce planos técnicos sin tocar las cotas" />
+    <meta property="og:image:alt" content={ogAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
