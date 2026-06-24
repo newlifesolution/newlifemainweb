@@ -108,14 +108,16 @@
 
     let raf = 0;
     let running = true;
+    let elapsed = 0;
     const clock = new THREE.Clock();
     function frame() {
-      const t = clock.getElapsedTime();
-      root.rotation.y = t * 0.04;
+      const dt = clock.getDelta();
+      elapsed += dt;
+      root.rotation.y += dt * 0.04;            // incremental (was absolute t*0.04)
       parts.forEach((p) => { p.rotation.x += p.userData.spin; p.rotation.y += p.userData.spin2; });
       sprites.forEach((sp) => {
         sp.position.y += sp.userData.vy;
-        sp.position.x += Math.sin(t * 0.5 + sp.userData.phase) * 0.002;
+        sp.position.x += Math.sin(elapsed * 0.5 + sp.userData.phase) * 0.002;
         if (sp.position.y > 5.5) sp.position.y = -5.5;
       });
       camera.position.x += (mouse.x * 1.2 - camera.position.x) * 0.04;
@@ -131,7 +133,9 @@
       frame();
       document.addEventListener('visibilitychange', () => {
         running = !document.hidden;
-        if (running) { clock.start(); frame(); } else cancelAnimationFrame(raf);
+        // Discard the gap accumulated while hidden so the background resumes
+        // smoothly. (clock.start() used to RESET elapsed to 0 → visible snap.)
+        if (running) { clock.getDelta(); frame(); } else cancelAnimationFrame(raf);
       });
     }
   }

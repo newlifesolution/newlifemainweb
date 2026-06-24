@@ -45,7 +45,7 @@ const feats = [
         <div class="spec-row"><span>TOOLS</span><span>01 / ∞</span></div>
         <div class="spec-row"><span>FLAGSHIP</span><span class="accent">CADlingua</span></div>
         <div class="spec-sep"></div>
-        <div class="spec-tick">▚ 48.86°N · 2.93°W · BILBAO</div>
+        <div class="spec-tick">▚ 43.26°N · 2.93°W · BILBAO</div>
       </aside>
     </div>
     <div class="scroll-hint mono">SCROLL ↓</div>
@@ -68,7 +68,7 @@ const feats = [
         {feats.map((f, i) => (
           <div class="feat" data-reveal style={`transition-delay:${i * 80}ms`}>
             <div class="feat-top">
-              <svg viewBox="0 0 24 24" class="feat-icon" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d={f.icon} /></svg>
+              <svg viewBox="0 0 24 24" class="feat-icon" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d={f.icon} /></svg>
               <span class="feat-idx mono">0{i + 1}</span>
             </div>
             <h3>{t(`${f.k}.t` as any)}</h3>

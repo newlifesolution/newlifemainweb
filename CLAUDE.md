@@ -8,9 +8,10 @@ The **newlife** hub — the marketing/landing site for **newlifesolutions.dev**,
 studio of technical tools with **CADlingua** (a CAD-aware DXF/DWG translator) as the featured
 flagship. Static Astro site, no backend. Deployed on Vercel (team `nlife`).
 
-GitHub repo: `newlifesolution/newlifemainweb` (the working clone here also has a second remote
-`origin` → `ifranjo/PAPIRO_WEB`, the pre-migration personal repo). Canonical remote is
-`neworigin` (the org repo).
+GitHub repo: `newlifesolution/newlifemainweb`, remote **`origin`** (the only remote). A leftover
+`personal` remote → `ifranjo/PAPIRO_WEB` (the pre-migration personal repo) was **removed 2026-06-22**:
+New Life is kept independent of the personal `ifranjo` account. See the property-wide **Independence
+rule** in `../CLAUDE.md`.
 
 ## Commands
 
@@ -104,11 +105,10 @@ GitHub account in a way the CLI/dashboard could connect, so `vercel git connect`
 token-based workflow sidesteps that entirely. If the native integration is ever wired up, delete
 this workflow to avoid double deploys.
 
-**Git account gotcha:** the org repo `newlifesolution/newlifemainweb` is owned by the separate
-GitHub user `newlifesolution`. Pushes must use that account (`gh auth switch --user
-newlifesolution`); `ifranjo`/`amzgoalsadmin` are read-only on it (`ifranjo` was added as a
-collaborator for tooling). Pushing files under `.github/workflows/` requires the `workflow`
-OAuth scope on the active account.
+**Git account (binding):** operate as `newlifesolution` only — it owns the org repo. Pushes must
+use it (`gh auth switch --user newlifesolution`). **NEVER** push as `ifranjo`/`amzgoalsadmin`
+(read-only on the org → breaks pushes); New Life is kept independent of the personal account.
+Pushing files under `.github/workflows/` requires the `workflow` OAuth scope on the active account.
 
 **Preview vs production:** `vercel deploy` (no `--prod`) makes a preview deployment that does NOT
 touch the live domain — use it to review. Preview URLs sit behind Vercel deployment protection
