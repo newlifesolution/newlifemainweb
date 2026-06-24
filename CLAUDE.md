@@ -48,6 +48,20 @@ Page/content structure (the key pattern — read these together):
 then reference it via `t('your.key')` in `Home.astro`. Keep the two locales in sync — `t()`
 falls back to the default locale if a key is missing, which silently hides untranslated EN copy.
 
+**Multi-route content pages (added 2026-06-24 — the site is no longer home-only).** `Layout.astro`
+takes `pathEs`/`pathEn` (per-locale path after the locale root; `''` = home) to emit a per-page
+`canonical` + `hreflang`, `chrome` (`'full'` = home with Intro+Scene3D; `'minimal'` = content page,
+**no intro, no 3D** — deliberately light because measured mobile CWV is poor with the 3D), and
+`extraJsonLd` (page-specific `@graph` nodes). The home's FAQPage/SoftwareApplication only render when
+`chrome==='full'`. Pattern per content page = a locale-agnostic component (e.g. `Comparison.astro`)
++ two thin route wrappers (`src/pages/<es-slug>.astro` and `src/pages/en/<en-slug>.astro`) that set
+`lang`, the paths, `chrome="minimal"` and build their own `extraJsonLd`. Live GEO pages (3, bilingual,
+2026-06-24): comparison (`/comparativa-traductor-planos`), use-case (`/traducir-planos-aleman`),
+how-to (`/como-traducir-plano-sin-romper-cotas`) + their `/en/` twins.
+**Adding a content page = FOUR hand-edits:** (1) strings in BOTH locales in `ui.ts`; (2) the two route
+wrappers; (3) its 2 URLs (with hreflang alternates) in `public/sitemap.xml`; (4) its 2 URLs in
+`scripts/indexnow.mjs`. Then build, deploy, `node scripts/indexnow.mjs`.
+
 **Background + intro layers** (both pure client `<script>` in their `.astro` file, both honor
 `prefers-reduced-motion`):
 - `src/components/Intro.astro` — full-screen intro overlay shown **once per session**
@@ -68,11 +82,25 @@ Static SSG means all content + metadata ship in the HTML, so search and AI crawl
 everything without running JS. The site is tuned for both classic search and generative-engine
 citation (ChatGPT / Claude / Perplexity).
 
+- **Bing Webmaster Tools: VERIFIED (2026-06-24)** for the `www` property (XML method —
+  `public/BingSiteAuth.xml` + a `msvalidate.01` meta in `Layout.astro`; **keep both, removing
+  either un-verifies**). Sitemap submitted. ChatGPT search uses Bing's index, so this is what makes
+  the site eligible there. Gotcha that cost two failed attempts: register the **`www`** property,
+  NOT the apex — the apex 307-redirects with a text/plain body (no `<head>`/no XML), so Bing's
+  fetch finds nothing on it.
+- **IndexNow** (`scripts/indexnow.mjs` + the `public/<key>.txt` key file): run `node
+  scripts/indexnow.mjs` after every prod deploy to ping Bing/Yandex with the changed URLs (keeps
+  AI engines on the fresh version). Last ping returns 200/202.
+- **`llms.txt` is decorative for citation** (measured: AI bots almost never fetch it) — keep it as
+  documentation for a future CADlingua public API, do NOT expect it to move AI citations.
 - **JSON-LD is generated, not hardcoded.** `Layout.astro` builds a `@graph`
-  (`Organization` + `WebSite` + `SoftwareApplication` for CADlingua) in `<head>` **from the
-  `t()` strings**. So the structured-data facts (CADlingua features, descriptions) stay true and
-  per-locale for free — change the copy in `ui.ts` and the JSON-LD follows. Never inline facts
-  that contradict the page; that would mislead the models the JSON-LD exists to inform.
+  (`Organization` + `WebSite` + `SoftwareApplication` for CADlingua + a home **FAQPage** of 5 niche
+  Q&A) in `<head>` **from the `t()` strings**; content pages add their own `Article`/`HowTo`/
+  `BreadcrumbList` via `extraJsonLd`. So the structured-data facts stay true and per-locale for free —
+  change the copy in `ui.ts` and the JSON-LD follows. Never inline facts that contradict the page,
+  and **never invent stats** (the only quantitative claim used is the real "validated against 7
+  production drawings") — fabricated numbers are the failure mode the groundable-content play exists
+  to avoid.
 - Full Open Graph + Twitter cards reference `public/og.png` (1200×630, brand card; regenerate
   with a Playwright screenshot of an HTML template if the tagline changes). Layout also emits
   `og:locale`/alternate and a `robots` meta per page.
