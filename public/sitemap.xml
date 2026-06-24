@@ -19,4 +19,22 @@
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
+  <url>
+    <loc>https://www.newlifesolutions.dev/comparativa-traductor-planos</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.newlifesolutions.dev/comparativa-traductor-planos"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.newlifesolutions.dev/en/cad-translation-vs-generic-translator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.newlifesolutions.dev/comparativa-traductor-planos"/>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.newlifesolutions.dev/en/cad-translation-vs-generic-translator</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.newlifesolutions.dev/comparativa-traductor-planos"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.newlifesolutions.dev/en/cad-translation-vs-generic-translator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.newlifesolutions.dev/comparativa-traductor-planos"/>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

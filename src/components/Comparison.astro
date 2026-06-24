@@ -1,0 +1,78 @@
+---
+// Comparison content page (generic translator vs CADlingua). Locale-agnostic — pulls
+// every string through t(). Rendered inside Layout with chrome="minimal" (no intro/3D),
+// so it stays light and readable for both humans and AI crawlers. The structure follows
+// what 2026 GEO data rewards: a comparison TABLE + sections of ~120-180 words + BLUF up top.
+import type { Lang } from '../i18n/ui';
+import { useTranslations, localizedPath } from '../i18n/utils';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const home = lang === 'es' ? '/' : '/en/';
+const rows = [1, 2, 3, 4, 5, 6].map((n) => ({
+  k: t(`cmp.r${n}k` as any), a: t(`cmp.r${n}a` as any), b: t(`cmp.r${n}b` as any),
+}));
+---
+<header class="cmp-top">
+  <div class="wrap">
+    <a class="back mono" href={home}>newlife<span class="accent">.</span> · CADlingua</a>
+  </div>
+</header>
+
+<main class="wrap cmp">
+  <p class="eyebrow">{t('cmp.eyebrow')}</p>
+  <h1>{t('cmp.h1')}</h1>
+  <p class="bluf">{t('cmp.bluf')}</p>
+
+  <h2>{t('cmp.tableh')}</h2>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr><th></th><th>{t('cmp.col1')}</th><th class="accent">{t('cmp.col2')}</th></tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr><th scope="row">{r.k}</th><td>{r.a}</td><td class="ok">{r.b}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <section>
+    <h2>{t('cmp.s1h')}</h2>
+    <p>{t('cmp.s1b')}</p>
+  </section>
+  <section>
+    <h2>{t('cmp.s2h')}</h2>
+    <p>{t('cmp.s2b')}</p>
+  </section>
+
+  <p class="cta-row">
+    <a class="btn btn-primary" href={`https://cadlingua.newlifesolutions.dev`}>{t('cmp.cta')} &rarr;</a>
+  </p>
+</main>
+
+<footer class="cmp-foot">
+  <div class="wrap mono">
+    <a href={home}>newlife<span class="accent">.</span></a> · CADlingua
+  </div>
+</footer>
+
+<style>
+  .cmp-top { border-bottom: 1px solid var(--line); padding: 18px 0; }
+  .back { font-family: var(--display); font-weight: 700; font-size: 1.15rem; color: var(--ink); }
+  .cmp { padding: 56px 26px 80px; max-width: 880px; }
+  .cmp h1 { font-size: clamp(1.9rem, 5vw, 3rem); margin: 14px 0 22px; }
+  .cmp h2 { font-size: 1.35rem; margin: 48px 0 14px; }
+  .bluf { font-size: 1.18rem; color: var(--ink-dim); line-height: 1.6; max-width: 70ch; }
+  .cmp section p { color: var(--ink-dim); max-width: 72ch; }
+  .tablewrap { overflow-x: auto; margin: 8px 0 8px; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.95rem; min-width: 560px; }
+  th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  tbody th { font-weight: 600; color: var(--ink); width: 28%; }
+  td { color: var(--ink-dim); } td.ok { color: var(--ink); }
+  tr:last-child th, tr:last-child td { border-bottom: none; }
+  .cta-row { margin-top: 44px; }
+  .cmp-foot { border-top: 1px solid var(--line); padding: 26px 0; color: var(--ink-faint); font-size: 0.85rem; }
+</style>

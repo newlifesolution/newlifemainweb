@@ -3,10 +3,21 @@ import type { Lang } from '../i18n/ui';
 import Scene3D from '../components/Scene3D.astro';
 import Intro from '../components/Intro.astro';
 import { useTranslations } from '../i18n/utils';
-interface Props { lang: Lang; title: string; description: string; }
-const { lang, title, description } = Astro.props;
+interface Props {
+  lang: Lang; title: string; description: string;
+  // Multi-route support. pathEs/pathEn = the per-locale path AFTER the locale root
+  // ('' = home). chrome 'minimal' = content/SEO page (no intro, no heavy 3D — kept light
+  // because measured mobile CWV is poor with the 3D). extraJsonLd = page-specific node(s).
+  pathEs?: string; pathEn?: string;
+  chrome?: 'full' | 'minimal';
+  extraJsonLd?: object[];
+}
+const { lang, title, description, pathEs = '', pathEn = '', chrome = 'full', extraJsonLd = [] } = Astro.props;
 const site = 'https://www.newlifesolutions.dev';
-const canonical = lang === 'es' ? `${site}/` : `${site}/en/`;
+const isHome = chrome === 'full';
+const hrefEs = `${site}/${pathEs}`;
+const hrefEn = `${site}/en/${pathEn}`;
+const canonical = lang === 'es' ? hrefEs : hrefEn;
 const ogImage = `${site}/og.png`;
 const ogLocale = lang === 'es' ? 'es_ES' : 'en_US';
 const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_ES';
@@ -58,10 +69,11 @@ const jsonLd = {
       ],
       provider: { '@id': `${site}/#org` },
     },
-    {
-      // FAQPage — discrete, citable Q&A on the niche (translate DXF/DWG without breaking
-      // dimensions). This is the GEO play: groundable facts a model can quote verbatim.
-      // Generated from the same t() strings, so the structured data never contradicts copy.
+    // FAQPage — discrete, citable Q&A on the niche (translate DXF/DWG without breaking
+    // dimensions). The GEO play: groundable facts a model can quote verbatim. Generated
+    // from the same t() strings, so the structured data never contradicts copy.
+    // HOME ONLY — content pages pass their own page-accurate node(s) via extraJsonLd.
+    ...(isHome ? [{
       '@type': 'FAQPage',
       '@id': `${site}/#faq`,
       inLanguage: inLang,
@@ -72,7 +84,8 @@ const jsonLd = {
         name: t(`faq.q${n}` as any),
         acceptedAnswer: { '@type': 'Answer', text: t(`faq.a${n}` as any) },
       })),
-    },
+    }] : []),
+    ...extraJsonLd,
   ],
 };
 ---
@@ -86,9 +99,9 @@ const jsonLd = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="es" href={`${site}/`} />
-    <link rel="alternate" hreflang="en" href={`${site}/en/`} />
-    <link rel="alternate" hreflang="x-default" href={`${site}/`} />
+    <link rel="alternate" hreflang="es" href={hrefEs} />
+    <link rel="alternate" hreflang="en" href={hrefEn} />
+    <link rel="alternate" hreflang="x-default" href={hrefEs} />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="generator" content="Astro" />
     <meta property="og:type" content="website" />
@@ -205,8 +218,8 @@ const jsonLd = {
     </noscript>
   </head>
   <body>
-    <Intro lang={lang} />
-    <Scene3D />
+    {isHome && <Intro lang={lang} />}
+    {isHome && <Scene3D />}
     <slot />
     <script>
       // scroll reveal

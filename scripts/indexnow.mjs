@@ -9,6 +9,8 @@ const KEY = 'c8e72311dc70cdf7b24ceaa13f58c8f2';
 const URLS = [
   `https://${HOST}/`,
   `https://${HOST}/en/`,
+  `https://${HOST}/comparativa-traductor-planos`,
+  `https://${HOST}/en/cad-translation-vs-generic-translator`,
 ];
 
 const body = {

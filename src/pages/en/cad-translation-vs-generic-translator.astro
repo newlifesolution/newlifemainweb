@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Comparison from '../../components/Comparison.astro';
+import { useTranslations } from '../../i18n/utils';
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const site = 'https://www.newlifesolutions.dev';
+const url = `${site}/en/cad-translation-vs-generic-translator`;
+const article = [
+  {
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: t('cmp.h1'),
+    description: t('cmp.desc'),
+    inLanguage: 'en',
+    isPartOf: { '@id': `${site}/#website` },
+    about: { '@id': `${site}/#cadlingua` },
+    author: { '@id': `${site}/#org` },
+    publisher: { '@id': `${site}/#org` },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'newlife', item: `${site}/en/` },
+      { '@type': 'ListItem', position: 2, name: t('cmp.h1'), item: url },
+    ],
+  },
+];
+---
+<Layout
+  lang={lang}
+  title={`${t('cmp.title')} · CADlingua`}
+  description={t('cmp.desc')}
+  pathEs="comparativa-traductor-planos"
+  pathEn="cad-translation-vs-generic-translator"
+  chrome="minimal"
+  extraJsonLd={article}
+>
+  <Comparison lang={lang} />
+</Layout>
