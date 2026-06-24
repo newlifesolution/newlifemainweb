@@ -58,6 +58,21 @@ const jsonLd = {
       ],
       provider: { '@id': `${site}/#org` },
     },
+    {
+      // FAQPage — discrete, citable Q&A on the niche (translate DXF/DWG without breaking
+      // dimensions). This is the GEO play: groundable facts a model can quote verbatim.
+      // Generated from the same t() strings, so the structured data never contradicts copy.
+      '@type': 'FAQPage',
+      '@id': `${site}/#faq`,
+      inLanguage: inLang,
+      isPartOf: { '@id': `${site}/#website` },
+      about: { '@id': `${site}/#cadlingua` },
+      mainEntity: [1, 2, 3, 4, 5].map((n) => ({
+        '@type': 'Question',
+        name: t(`faq.q${n}` as any),
+        acceptedAnswer: { '@type': 'Answer', text: t(`faq.a${n}` as any) },
+      })),
+    },
   ],
 };
 ---

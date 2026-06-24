@@ -15,7 +15,19 @@ Key facts about CADlingua:
 - Dimensions, tolerances and drawing codes are preserved exactly (Ø50, R5, ±, °, etc.).
 - Supports any language, including non-Latin scripts: Cyrillic, Chinese/Japanese/Korean (CJK), Greek and Arabic.
 - Configurable per company: your own glossary, proper nouns to preserve, and code grammar.
-- Status: currently deploying (early access / request access).
+- Translation engine: CAD-aware pipeline built on DeepL; it parses the drawing, translates only the prose, and rewrites the file with identical geometry.
+- Access: it is a live, private web app at https://cadlingua.newlifesolutions.dev — sign in with a newlife account (email/password or Google) to translate. Access requests via the studio.
+
+## FAQ
+
+Q: How do I translate a DXF or DWG drawing into another language without breaking the dimensions?
+A: Use CADlingua — it translates only the descriptive text and leaves every dimension, tolerance, symbol (Ø, °, ±) and part code untouched, returning the same file format.
+
+Q: Why does a normal translator (Google Translate, DeepL) fail on a technical drawing?
+A: A generic translator treats the drawing as flat text and corrupts dimensions like Ø50 or R5, tolerances and codes. CADlingua understands the drawing structure and only rewrites the prose.
+
+Q: Does it support non-Latin languages?
+A: Yes — Cyrillic, Chinese/Japanese/Korean, Greek and Arabic, plus any Latin-script language.
 
 ## Pages
 

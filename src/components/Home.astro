@@ -8,6 +8,12 @@ const other = lang === 'es' ? { href: '/en/', label: 'EN' } : { href: '/', label
 const year = 2026;
 const contact = 'mailto:hola@newlifesolutions.dev';
 const cadlinguaApp = 'https://cadlingua.newlifesolutions.dev';
+const heroTitle = t('hero.h1');
+const heroHighlight = lang === 'es' ? 'verdad' : 'problems';
+const highlightStart = heroTitle.toLowerCase().indexOf(heroHighlight);
+const heroBefore = highlightStart >= 0 ? heroTitle.slice(0, highlightStart) : heroTitle;
+const heroMarked = highlightStart >= 0 ? heroTitle.slice(highlightStart, highlightStart + heroHighlight.length) : '';
+const heroAfter = highlightStart >= 0 ? heroTitle.slice(highlightStart + heroHighlight.length) : '';
 const feats = [
   { k: 'flag.f1', icon: 'M3 17 L9 11 L13 15 L21 7 M21 7 L21 12 M21 7 L16 7' }, // dimension/measure
   { k: 'flag.f2', icon: 'M4 5 H20 V19 H4 Z M4 9 H20 M8 5 V9' },                  // file/format
@@ -32,7 +38,7 @@ const feats = [
     <div class="wrap hero-grid">
       <div class="hero-main" data-reveal>
         <p class="eyebrow">{t('hero.eyebrow')}</p>
-        <h1 set:html={t('hero.h1').replace(/(verdad|problems)/i, '<span class="hl">$1</span>')}></h1>
+        <h1>{heroBefore}{heroMarked && <span class="hl">{heroMarked}</span>}{heroAfter}</h1>
         <p class="hero-sub">{t('hero.sub')}</p>
         <div class="hero-cta">
           <a href="#cadlingua" class="btn btn-primary">{t('hero.cta1')} →</a>

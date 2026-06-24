@@ -20,14 +20,15 @@ npm install          # deps: astro + three
 npm run dev          # local dev server (hot reload)
 npm run build        # static build -> dist/
 npm run preview      # serve the built dist/ locally
+npm run smoke        # build + preview + Playwright smoke for / and /en/
 ```
 
-No test runner is configured. Visual changes are verified with **ad-hoc Playwright screenshots**
-(see "Visual verification" below), not a test suite.
+No unit test runner is configured. `npm run smoke` is the lightweight browser gate;
+visual changes still use **ad-hoc Playwright screenshots** when screenshots matter.
 
 ## Architecture
 
-**Static Astro 4 with built-in i18n.** Output is plain HTML in `dist/` — Vercel serves it as-is,
+**Static Astro 7 with built-in i18n.** Output is plain HTML in `dist/` — Vercel serves it as-is,
 no SSR. Two locales configured in `astro.config.mjs`: **`es` is the default at `/`**, **`en`
 lives at `/en/`** (`prefixDefaultLocale: false`).
 
@@ -78,8 +79,12 @@ citation (ChatGPT / Claude / Perplexity).
 - `public/{sitemap.xml,robots.txt,llms.txt}` are **hand-maintained** static files copied verbatim
   to the site root at build. `robots.txt` explicitly allows AI crawlers and points to the sitemap;
   `llms.txt` is the GEO summary of newlife + CADlingua.
-- **Sitemap gotcha:** `@astrojs/sitemap` is intentionally NOT used — it crashes with this Astro
-  version. The sitemap is therefore manual. **Adding a page = two hand-edits:** add its `<url>`
+- `vercel.json` owns production headers: immutable cache for `/_astro/*`, short cache for `og.png`,
+  and security headers/CSP for pages. Keep it compatible with the current inline Astro scripts
+  unless those scripts are moved to external modules.
+- **Sitemap gotcha:** `@astrojs/sitemap` is intentionally NOT configured; the sitemap is manual.
+  If you add the integration, verify it on this Astro version before deleting the hand-maintained
+  file. **Adding a page = two hand-edits:** add its `<url>`
   (with `hreflang` alternates) to `public/sitemap.xml`, and add its strings to BOTH locales in
   `ui.ts`. Forgetting either silently drops the page from search/indexing or from one language.
 - All canonical/SEO/`og:image` URLs are absolute on `https://www.newlifesolutions.dev` (the apex
@@ -119,8 +124,10 @@ touch the live domain — use it to review. Preview URLs sit behind Vercel deplo
 
 Playwright is installed **globally** (`~/.npm-global`), not as a project dep. Scripts import it
 by absolute file URL (`file:///C:/Users/ifranjo/.npm-global/node_modules/playwright/index.mjs`).
-Pattern: `npm run build`, serve `dist/` (`python -m http.server 4321 --directory dist`), then a
-Playwright script that captures frames/screenshots. To screenshot the site past the intro,
+Smoke pattern: `npm run smoke` builds, starts `astro preview` on `127.0.0.1:4321`, checks `/`
+and `/en/`, then stops the preview process. Screenshot pattern: `npm run build`, serve `dist/`
+(`python -m http.server 4321 --directory dist`), then a Playwright script that captures frames/screenshots.
+To screenshot the site past the intro,
 remove `#intro` in the page and clear `documentElement.style.overflow` before shooting. Measure
 the actual rendered output rather than trusting the code — a silent canvas error (e.g. assigning
 read-only `clientWidth`) shows up only as a blank background in a screenshot.
