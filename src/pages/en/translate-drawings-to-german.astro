@@ -1,0 +1,49 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import UseCase from '../../components/UseCase.astro';
+import { useTranslations } from '../../i18n/utils';
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const site = 'https://www.newlifesolutions.dev';
+const url = `${site}/en/translate-drawings-to-german`;
+const extra = [
+  {
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: t('uc.h1'),
+    description: t('uc.desc'),
+    inLanguage: 'en',
+    isPartOf: { '@id': `${site}/#website` },
+    about: { '@id': `${site}/#cadlingua` },
+    author: { '@id': `${site}/#org` },
+    publisher: { '@id': `${site}/#org` },
+  },
+  {
+    '@type': 'HowTo',
+    '@id': `${url}#howto`,
+    name: t('uc.steph'),
+    inLanguage: 'en',
+    step: [1, 2, 3].map((n) => ({
+      '@type': 'HowToStep', position: n, name: t(`uc.step${n}t` as any), text: t(`uc.step${n}d` as any),
+    })),
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'newlife', item: `${site}/en/` },
+      { '@type': 'ListItem', position: 2, name: t('uc.h1'), item: url },
+    ],
+  },
+];
+---
+<Layout
+  lang={lang}
+  title={`${t('uc.title')} · CADlingua`}
+  description={t('uc.desc')}
+  pathEs="traducir-planos-aleman"
+  pathEn="translate-drawings-to-german"
+  chrome="minimal"
+  extraJsonLd={extra}
+>
+  <UseCase lang={lang} />
+</Layout>

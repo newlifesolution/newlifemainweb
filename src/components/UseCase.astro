@@ -1,0 +1,50 @@
+---
+// Use-case content page (translate drawings to German). Locale-agnostic, chrome=minimal.
+// Structure: BLUF → 2 prose sections (~120-180 words) → 3-step strip. Light, extractable.
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const home = lang === 'es' ? '/' : '/en/';
+const steps = [1, 2, 3].map((n) => ({ t: t(`uc.step${n}t` as any), d: t(`uc.step${n}d` as any) }));
+---
+<header class="uc-top">
+  <div class="wrap"><a class="back mono" href={home}>newlife<span class="accent">.</span> · CADlingua</a></div>
+</header>
+
+<main class="wrap uc">
+  <p class="eyebrow">{t('uc.eyebrow')}</p>
+  <h1>{t('uc.h1')}</h1>
+  <p class="bluf">{t('uc.bluf')}</p>
+
+  <section><h2>{t('uc.s1h')}</h2><p>{t('uc.s1b')}</p></section>
+  <section><h2>{t('uc.s2h')}</h2><p>{t('uc.s2b')}</p></section>
+
+  <h2>{t('uc.steph')}</h2>
+  <ol class="steps">
+    {steps.map((s, i) => (
+      <li><span class="num mono">{`0${i + 1}`}</span><div><strong>{s.t}</strong><p>{s.d}</p></div></li>
+    ))}
+  </ol>
+
+  <p class="cta-row"><a class="btn btn-primary" href="https://cadlingua.newlifesolutions.dev">{t('uc.cta')} &rarr;</a></p>
+</main>
+
+<footer class="uc-foot"><div class="wrap mono"><a href={home}>newlife<span class="accent">.</span></a> · CADlingua</div></footer>
+
+<style>
+  .uc-top { border-bottom: 1px solid var(--line); padding: 18px 0; }
+  .back { font-family: var(--display); font-weight: 700; font-size: 1.15rem; color: var(--ink); }
+  .uc { padding: 56px 26px 80px; max-width: 880px; }
+  .uc h1 { font-size: clamp(1.9rem, 5vw, 3rem); margin: 14px 0 22px; }
+  .uc h2 { font-size: 1.35rem; margin: 48px 0 14px; }
+  .bluf { font-size: 1.18rem; color: var(--ink-dim); line-height: 1.6; max-width: 70ch; }
+  .uc section p { color: var(--ink-dim); max-width: 72ch; }
+  .steps { list-style: none; display: grid; gap: 14px; margin: 8px 0; padding: 0; }
+  .steps li { display: flex; gap: 16px; align-items: flex-start; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px 18px; }
+  .steps .num { color: var(--accent); font-weight: 700; font-size: 1rem; }
+  .steps strong { color: var(--ink); } .steps p { color: var(--ink-dim); margin-top: 2px; }
+  .cta-row { margin-top: 44px; }
+  .uc-foot { border-top: 1px solid var(--line); padding: 26px 0; color: var(--ink-faint); font-size: 0.85rem; }
+</style>

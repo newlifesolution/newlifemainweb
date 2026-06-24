@@ -1,0 +1,40 @@
+---
+// How-to content page (translate a drawing without breaking dimensions). chrome=minimal.
+// Long-form + ordered steps → the depth/structure 2026 GEO data rewards. Locale-agnostic.
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const home = lang === 'es' ? '/' : '/en/';
+const steps = [1, 2, 3].map((n) => ({ h: t(`ht.s${n}h` as any), b: t(`ht.s${n}b` as any) }));
+---
+<header class="ht-top">
+  <div class="wrap"><a class="back mono" href={home}>newlife<span class="accent">.</span> · CADlingua</a></div>
+</header>
+
+<main class="wrap ht">
+  <p class="eyebrow">{t('ht.eyebrow')}</p>
+  <h1>{t('ht.h1')}</h1>
+  <p class="bluf">{t('ht.bluf')}</p>
+
+  {steps.map((s) => (
+    <section><h2>{s.h}</h2><p>{s.b}</p></section>
+  ))}
+
+  <p class="cta-row"><a class="btn btn-primary" href="https://cadlingua.newlifesolutions.dev">{t('ht.cta')} &rarr;</a></p>
+</main>
+
+<footer class="ht-foot"><div class="wrap mono"><a href={home}>newlife<span class="accent">.</span></a> · CADlingua</div></footer>
+
+<style>
+  .ht-top { border-bottom: 1px solid var(--line); padding: 18px 0; }
+  .back { font-family: var(--display); font-weight: 700; font-size: 1.15rem; color: var(--ink); }
+  .ht { padding: 56px 26px 80px; max-width: 820px; }
+  .ht h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); margin: 14px 0 22px; }
+  .ht h2 { font-size: 1.3rem; margin: 46px 0 12px; }
+  .bluf { font-size: 1.18rem; color: var(--ink-dim); line-height: 1.6; max-width: 70ch; }
+  .ht section p { color: var(--ink-dim); max-width: 72ch; }
+  .cta-row { margin-top: 44px; }
+  .ht-foot { border-top: 1px solid var(--line); padding: 26px 0; color: var(--ink-faint); font-size: 0.85rem; }
+</style>

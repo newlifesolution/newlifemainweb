@@ -11,6 +11,10 @@ const URLS = [
   `https://${HOST}/en/`,
   `https://${HOST}/comparativa-traductor-planos`,
   `https://${HOST}/en/cad-translation-vs-generic-translator`,
+  `https://${HOST}/traducir-planos-aleman`,
+  `https://${HOST}/en/translate-drawings-to-german`,
+  `https://${HOST}/como-traducir-plano-sin-romper-cotas`,
+  `https://${HOST}/en/how-to-translate-a-drawing-without-breaking-dimensions`,
 ];
 
 const body = {

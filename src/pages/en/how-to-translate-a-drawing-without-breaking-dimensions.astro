@@ -1,0 +1,41 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HowTo from '../../components/HowTo.astro';
+import { useTranslations } from '../../i18n/utils';
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const site = 'https://www.newlifesolutions.dev';
+const url = `${site}/en/how-to-translate-a-drawing-without-breaking-dimensions`;
+const extra = [
+  {
+    '@type': 'HowTo',
+    '@id': `${url}#howto`,
+    name: t('ht.h1'),
+    description: t('ht.desc'),
+    inLanguage: 'en',
+    isPartOf: { '@id': `${site}/#website` },
+    about: { '@id': `${site}/#cadlingua` },
+    step: [1, 2, 3].map((n) => ({
+      '@type': 'HowToStep', position: n, name: t(`ht.s${n}h` as any), text: t(`ht.s${n}b` as any),
+    })),
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'newlife', item: `${site}/en/` },
+      { '@type': 'ListItem', position: 2, name: t('ht.h1'), item: url },
+    ],
+  },
+];
+---
+<Layout
+  lang={lang}
+  title={`${t('ht.title')} · CADlingua`}
+  description={t('ht.desc')}
+  pathEs="como-traducir-plano-sin-romper-cotas"
+  pathEn="how-to-translate-a-drawing-without-breaking-dimensions"
+  chrome="minimal"
+  extraJsonLd={extra}
+>
+  <HowTo lang={lang} />
+</Layout>

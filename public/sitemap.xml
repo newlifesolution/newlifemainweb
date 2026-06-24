@@ -37,4 +37,40 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://www.newlifesolutions.dev/traducir-planos-aleman</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.newlifesolutions.dev/traducir-planos-aleman"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.newlifesolutions.dev/en/translate-drawings-to-german"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.newlifesolutions.dev/traducir-planos-aleman"/>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.newlifesolutions.dev/en/translate-drawings-to-german</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.newlifesolutions.dev/traducir-planos-aleman"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.newlifesolutions.dev/en/translate-drawings-to-german"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.newlifesolutions.dev/traducir-planos-aleman"/>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.newlifesolutions.dev/como-traducir-plano-sin-romper-cotas</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.newlifesolutions.dev/como-traducir-plano-sin-romper-cotas"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.newlifesolutions.dev/en/how-to-translate-a-drawing-without-breaking-dimensions"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.newlifesolutions.dev/como-traducir-plano-sin-romper-cotas"/>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.newlifesolutions.dev/en/how-to-translate-a-drawing-without-breaking-dimensions</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.newlifesolutions.dev/como-traducir-plano-sin-romper-cotas"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.newlifesolutions.dev/en/how-to-translate-a-drawing-without-breaking-dimensions"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.newlifesolutions.dev/como-traducir-plano-sin-romper-cotas"/>
+    <lastmod>2026-06-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
