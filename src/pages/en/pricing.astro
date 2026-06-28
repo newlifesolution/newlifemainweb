@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Pricing from '../../components/Pricing.astro';
+import { useTranslations } from '../../i18n/utils';
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const site = 'https://www.newlifesolutions.dev';
+const url = `${site}/en/pricing`;
+const article = [
+  {
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: t('price.h1'),
+    description: t('price.desc'),
+    inLanguage: 'en',
+    isPartOf: { '@id': `${site}/#website` },
+    about: { '@id': `${site}/#cadlingua` },
+    author: { '@id': `${site}/#org` },
+    publisher: { '@id': `${site}/#org` },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'newlife', item: `${site}/` },
+      { '@type': 'ListItem', position: 2, name: t('price.eyebrow'), item: url },
+    ],
+  },
+];
+---
+<Layout
+  lang={lang}
+  title={`${t('price.title')}`}
+  description={t('price.desc')}
+  pathEs="precios"
+  pathEn="pricing"
+  chrome="minimal"
+  extraJsonLd={article}
+>
+  <Pricing lang={lang} />
+</Layout>

@@ -1,0 +1,128 @@
+---
+// Pricing content page (CADlingua). Locale-agnostic — pulls every string through t().
+// Rendered inside Layout with chrome="minimal" (no intro/3D). Honest by design: NO invented
+// prices — the model is per organization + per translated character (the real DeepL cost basis),
+// with three tiers (Access / Team / Enterprise). The research finding this applies: pricing
+// transparency lifts conversion, and usage-based SaaS (Snowflake-style) holds ~30%+ margins.
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const home = lang === 'es' ? '/' : '/en/';
+const contact = 'mailto:hola@newlifesolutions.dev';
+const cadlinguaApp = 'https://cadlingua.newlifesolutions.dev';
+const tiers = [1, 2, 3].map((n) => ({
+  name: t(`price.t${n}.name` as any),
+  price: t(`price.t${n}.price` as any),
+  unit: t(`price.t${n}.unit` as any),
+  tag: t(`price.t${n}.tag` as any),
+  feats: [1, 2, 3, 4].map((k) => t(`price.t${n}.f${k}` as any)),
+  cta: t(`price.t${n}.cta` as any),
+  href: n === 1 ? cadlinguaApp : contact,
+  external: n === 1,
+  featured: n === 2,
+}));
+---
+<header class="pr-top">
+  <div class="wrap">
+    <a class="back mono" href={home}>newlife<span class="accent">.</span> · CADlingua</a>
+  </div>
+</header>
+
+<main class="wrap pr">
+  <p class="eyebrow">{t('price.eyebrow')}</p>
+  <h1>{t('price.h1')}</h1>
+  <p class="bluf">{t('price.bluf')}</p>
+
+  <div class="tiers">
+    {tiers.map((tier) => (
+      <article class={`tier${tier.featured ? ' featured' : ''}`}>
+        <header class="tier-head">
+          <span class="tier-tag mono">{tier.tag}</span>
+          <h2 class="tier-name">{tier.name}</h2>
+          <div class="tier-price">
+            <span class="amt">{tier.price}</span>
+            <span class="unit">{tier.unit}</span>
+          </div>
+        </header>
+        <ul class="tier-feats">
+          {tier.feats.map((f) => <li>{f}</li>)}
+        </ul>
+        <a
+          class={`btn ${tier.featured ? 'btn-primary' : 'btn-ghost'}`}
+          href={tier.href}
+          target={tier.external ? '_blank' : undefined}
+          rel={tier.external ? 'noopener' : undefined}
+        >{tier.cta} &rarr;</a>
+      </article>
+    ))}
+  </div>
+
+  <section class="model">
+    <h2>{t('price.modelh')}</h2>
+    <p>{t('price.modelb')}</p>
+  </section>
+
+  <p class="note mono">{t('price.note')}</p>
+
+  <p class="cta-row">
+    <a class="btn btn-primary" href={cadlinguaApp} target="_blank" rel="noopener">{t('price.cta')} &rarr;</a>
+  </p>
+</main>
+
+<footer class="pr-foot">
+  <div class="wrap mono">
+    <a href={home}>newlife<span class="accent">.</span></a> · CADlingua
+  </div>
+</footer>
+
+<style>
+  .pr-top { border-bottom: 1px solid var(--line); padding: 18px 0; }
+  .back { font-family: var(--display); font-weight: 700; font-size: 1.15rem; color: var(--ink); }
+  .pr { padding: 56px 26px 80px; max-width: 1080px; }
+  .pr h1 { font-size: clamp(1.9rem, 5vw, 3rem); margin: 14px 0 22px; max-width: 20ch; }
+  .bluf { font-size: 1.15rem; color: var(--ink-dim); line-height: 1.6; max-width: 70ch; }
+
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; align-items: start; }
+  .tier {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 28px 24px; backdrop-filter: blur(6px); display: flex; flex-direction: column; gap: 18px;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+  }
+  .tier:hover { border-color: var(--line-strong); transform: translateY(-4px); }
+  .tier.featured {
+    border-color: rgba(0,230,203,0.45); box-shadow: var(--glow);
+    background: linear-gradient(180deg, rgba(0,230,203,0.05), var(--panel));
+  }
+  .tier-tag {
+    font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .tier.featured .tier-tag { color: var(--accent); }
+  .tier-name { font-size: 1.5rem; margin-top: 2px; }
+  .tier-price { display: flex; align-items: baseline; gap: 9px; margin-top: 2px; }
+  .tier-price .amt { font-family: var(--display); font-size: 1.9rem; font-weight: 600; color: var(--ink); }
+  .tier-price .unit { font-size: 0.85rem; color: var(--ink-faint); }
+  .tier-feats { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.92rem; color: var(--ink-dim); }
+  .tier-feats li { position: relative; padding-left: 20px; line-height: 1.45; }
+  .tier-feats li::before {
+    content: ''; position: absolute; left: 0; top: 0.62em; width: 7px; height: 7px;
+    border-radius: 50%; background: var(--accent); opacity: 0.7;
+  }
+  .tier .btn { align-self: flex-start; }
+
+  .model { margin-top: 56px; max-width: 72ch; }
+  .model h2 { font-size: 1.35rem; margin-bottom: 14px; }
+  .model p { color: var(--ink-dim); }
+
+  .note {
+    margin-top: 28px; font-size: 0.78rem; color: var(--ink-faint); line-height: 1.5;
+    padding: 14px 16px; border: 1px dashed var(--line-strong); border-radius: var(--radius-sm);
+  }
+  .cta-row { margin-top: 40px; }
+  .pr-foot { border-top: 1px solid var(--line); padding: 26px 0; color: var(--ink-faint); font-size: 0.85rem; }
+
+  @media (max-width: 820px) {
+    .tiers { grid-template-columns: 1fr; }
+  }
+</style>

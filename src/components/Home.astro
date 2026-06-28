@@ -8,6 +8,7 @@ const other = lang === 'es' ? { href: '/en/', label: 'EN' } : { href: '/', label
 const year = 2026;
 const contact = 'mailto:hola@newlifesolutions.dev';
 const cadlinguaApp = 'https://cadlingua.newlifesolutions.dev';
+const pricingHref = lang === 'es' ? '/precios' : '/en/pricing';
 const heroTitle = t('hero.h1');
 const heroHighlight = lang === 'es' ? 'verdad' : 'problems';
 const highlightStart = heroTitle.toLowerCase().indexOf(heroHighlight);
@@ -26,6 +27,7 @@ const feats = [
     <a href={lang === 'es' ? '/' : '/en/'} class="brand"><span class="dot"></span>newlife<span class="accent">.</span></a>
     <nav class="nav-links">
       <a href="#cadlingua" class="nav-a">{t('nav.flagship')}</a>
+      <a href={pricingHref} class="nav-a">{t('nav.pricing')}</a>
       <a href={cadlinguaApp} target="_blank" rel="noopener" class="btn btn-ghost btn-sm">{t('nav.cta')}</a>
       <a href={other.href} class="lang mono" aria-label={`Switch to ${other.label}`}>{other.label}</a>
     </nav>
@@ -120,6 +122,7 @@ const feats = [
     </div>
     <nav class="footer-links mono">
       <a href={cadlinguaApp} target="_blank" rel="noopener">CADlingua</a>
+      <a href={pricingHref}>{t('nav.pricing')}</a>
       <a href={contact}>hola@newlifesolutions.dev</a>
     </nav>
     <span class="mono fcopy">© {year} newlife · {t('footer.rights')}</span>

@@ -58,7 +58,9 @@ const jsonLd = {
       name: 'CADlingua',
       applicationCategory: 'DesignApplication',
       operatingSystem: 'Web',
-      url: `${canonical}#cadlingua`,
+      // Stable product URL — the home's #cadlingua section. (Was `${canonical}#cadlingua`,
+      // which on chrome="minimal" content pages pointed at a fragment that doesn't exist there.)
+      url: `${site}/#cadlingua`,
       inLanguage: inLang,
       description: t('flag.body'),
       featureList: [

@@ -73,4 +73,22 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://www.newlifesolutions.dev/precios</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.newlifesolutions.dev/precios"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.newlifesolutions.dev/en/pricing"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.newlifesolutions.dev/precios"/>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.newlifesolutions.dev/en/pricing</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.newlifesolutions.dev/precios"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.newlifesolutions.dev/en/pricing"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.newlifesolutions.dev/precios"/>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

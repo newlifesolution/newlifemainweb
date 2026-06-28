@@ -15,6 +15,8 @@ const URLS = [
   `https://${HOST}/en/translate-drawings-to-german`,
   `https://${HOST}/como-traducir-plano-sin-romper-cotas`,
   `https://${HOST}/en/how-to-translate-a-drawing-without-breaking-dimensions`,
+  `https://${HOST}/precios`,
+  `https://${HOST}/en/pricing`,
 ];
 
 const body = {
