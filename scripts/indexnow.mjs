@@ -17,6 +17,8 @@ const URLS = [
   `https://${HOST}/en/how-to-translate-a-drawing-without-breaking-dimensions`,
   `https://${HOST}/precios`,
   `https://${HOST}/en/pricing`,
+  `https://${HOST}/contacto`,
+  `https://${HOST}/en/contact`,
 ];
 
 const body = {

@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Contact from '../components/Contact.astro';
+import { useTranslations } from '../i18n/utils';
+const lang = 'es' as const;
+const t = useTranslations(lang);
+const site = 'https://www.newlifesolutions.dev';
+const url = `${site}/contacto`;
+const article = [
+  {
+    '@type': 'ContactPage',
+    '@id': `${url}#contact`,
+    name: t('contact.h1'),
+    description: t('contact.desc'),
+    inLanguage: 'es-ES',
+    isPartOf: { '@id': `${site}/#website` },
+    about: { '@id': `${site}/#org` },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'newlife', item: `${site}/` },
+      { '@type': 'ListItem', position: 2, name: t('contact.eyebrow'), item: url },
+    ],
+  },
+];
+---
+<Layout
+  lang={lang}
+  title={t('contact.title')}
+  description={t('contact.desc')}
+  pathEs="contacto"
+  pathEn="contact"
+  chrome="minimal"
+  extraJsonLd={article}
+>
+  <Contact lang={lang} />
+</Layout>

@@ -1,0 +1,143 @@
+---
+// Contact content page. Locale-agnostic — pulls every string through t().
+// Rendered inside Layout with chrome="minimal" (no intro/3D). The form POSTs to the
+// accounts service (the only backend) at /api/contact, which stores a Lead and surfaces
+// it in the owner CRM. Honeypot `website` field drops bots. Cross-origin POST works
+// because accounts' CORS already allows https://www.newlifesolutions.dev.
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const home = lang === 'es' ? '/' : '/en/';
+const ACCOUNTS = 'https://accounts.newlifesolutions.dev';
+const email = 'imafranj@gmail.com';
+---
+<header class="ct-top">
+  <div class="wrap">
+    <a class="back mono" href={home}>newlife<span class="accent">.</span> · CADlingua</a>
+  </div>
+</header>
+
+<main class="wrap ct">
+  <p class="eyebrow">{t('contact.eyebrow')}</p>
+  <h1>{t('contact.h1')}</h1>
+  <p class="bluf">{t('contact.bluf')}</p>
+
+  <form
+    id="cform"
+    class="card"
+    data-accounts={ACCOUNTS}
+    data-send={t('contact.send')}
+    data-sending={t('contact.sending')}
+    data-ok={t('contact.ok')}
+    data-err={t('contact.err')}
+    novalidate
+  >
+    <div class="grid">
+      <div>
+        <label for="f_name">{t('contact.f.name')}</label>
+        <input id="f_name" type="text" maxlength="200" autocomplete="name" required />
+      </div>
+      <div>
+        <label for="f_email">{t('contact.f.email')}</label>
+        <input id="f_email" type="email" maxlength="320" autocomplete="email" required />
+      </div>
+    </div>
+    <label for="f_company">{t('contact.f.company')}</label>
+    <input id="f_company" type="text" maxlength="200" autocomplete="organization" />
+
+    <label for="f_message">{t('contact.f.message')}</label>
+    <textarea id="f_message" maxlength="5000" rows="5" placeholder={t('contact.f.msgph')} required></textarea>
+
+    <!-- honeypot: hidden from humans; bots fill it → server drops the submission -->
+    <input id="f_website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp" />
+
+    <div id="cstatus" class="cstatus" role="status" aria-live="polite"></div>
+
+    <div class="actions">
+      <button id="csend" type="submit" class="btn btn-primary">{t('contact.send')} &rarr;</button>
+      <a class="acct" href={`${ACCOUNTS}/account`}>{t('contact.account')} &rarr;</a>
+    </div>
+    <p class="alt mono">{t('contact.alt')} <a href={`mailto:${email}`}>{email}</a></p>
+  </form>
+</main>
+
+<footer class="ct-foot">
+  <div class="wrap mono">
+    <a href={home}>newlife<span class="accent">.</span></a> · {t('footer.tagline')}
+  </div>
+</footer>
+
+<style>
+  .ct-top { border-bottom: 1px solid var(--line); padding: 18px 0; }
+  .back { font-family: var(--display); font-weight: 700; font-size: 1.15rem; color: var(--ink); }
+  .ct { padding: 56px 26px 80px; max-width: 760px; }
+  .ct h1 { font-size: clamp(1.9rem, 5vw, 3rem); margin: 14px 0 18px; max-width: 22ch; }
+  .bluf { font-size: 1.12rem; color: var(--ink-dim); line-height: 1.6; max-width: 64ch; margin-bottom: 36px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 28px 26px; backdrop-filter: blur(6px); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  label { display: block; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-faint); margin: 16px 0 6px; }
+  .grid label { margin-top: 0; }
+  input, textarea { width: 100%; background: var(--bg-soft); border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm); color: var(--ink); padding: 11px 13px; font-family: var(--sans);
+    font-size: 0.95rem; transition: border-color 0.18s; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 120px; line-height: 1.55; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 22px; }
+  .acct { font-size: 0.9rem; color: var(--accent); }
+  .alt { margin-top: 20px; font-size: 0.82rem; color: var(--ink-faint); }
+  .alt a { color: var(--ink-dim); }
+  .cstatus { font-size: 0.92rem; line-height: 1.5; margin-top: 18px; padding: 0; }
+  .cstatus.ok { padding: 12px 16px; border-radius: var(--radius-sm); background: rgba(0,230,203,0.10);
+    border: 1px solid rgba(0,230,203,0.5); color: var(--accent); }
+  .cstatus.err { padding: 12px 16px; border-radius: var(--radius-sm); background: rgba(255,107,107,0.10);
+    border: 1px solid rgba(255,107,107,0.5); color: #ff8585; }
+  .ct-foot { border-top: 1px solid var(--line); padding: 26px 0; color: var(--ink-faint); font-size: 0.85rem; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const form = document.getElementById('cform') as HTMLFormElement | null;
+  if (form) {
+    const ACCOUNTS = form.dataset.accounts!;
+    const T = {
+      send: form.dataset.send!, sending: form.dataset.sending!,
+      ok: form.dataset.ok!, err: form.dataset.err!,
+    };
+    const btn = document.getElementById('csend') as HTMLButtonElement;
+    const statusEl = document.getElementById('cstatus') as HTMLElement;
+    const val = (id: string) => (document.getElementById(id) as HTMLInputElement).value.trim();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = val('f_name'), email = val('f_email'), message = val('f_message');
+      if (!name || !email || !message) {
+        statusEl.className = 'cstatus err'; statusEl.textContent = T.err; return;
+      }
+      statusEl.className = 'cstatus'; statusEl.textContent = '';
+      btn.disabled = true; btn.textContent = T.sending + ' …';
+      try {
+        const r = await fetch(ACCOUNTS + '/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name, email, message,
+            company: val('f_company') || null,
+            website: (document.getElementById('f_website') as HTMLInputElement).value,
+          }),
+        });
+        if (!r.ok) throw new Error('status ' + r.status);
+        statusEl.className = 'cstatus ok'; statusEl.textContent = T.ok;
+        form.reset();
+      } catch (err) {
+        statusEl.className = 'cstatus err'; statusEl.textContent = T.err;
+      } finally {
+        btn.disabled = false; btn.innerHTML = T.send + ' &rarr;';
+      }
+    });
+  }
+</script>
