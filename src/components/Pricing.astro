@@ -10,7 +10,7 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const home = lang === 'es' ? '/' : '/en/';
-const contact = 'mailto:hola@newlifesolutions.dev';
+const contact = 'mailto:imafranj@gmail.com';
 const cadlinguaApp = 'https://cadlingua.newlifesolutions.dev';
 const tiers = [1, 2, 3].map((n) => ({
   name: t(`price.t${n}.name` as any),

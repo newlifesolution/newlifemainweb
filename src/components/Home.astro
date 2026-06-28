@@ -6,7 +6,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const other = lang === 'es' ? { href: '/en/', label: 'EN' } : { href: '/', label: 'ES' };
 const year = 2026;
-const contact = 'mailto:hola@newlifesolutions.dev';
+const contact = 'mailto:imafranj@gmail.com';
 const cadlinguaApp = 'https://cadlingua.newlifesolutions.dev';
 const pricingHref = lang === 'es' ? '/precios' : '/en/pricing';
 const heroTitle = t('hero.h1');
@@ -123,7 +123,7 @@ const feats = [
     <nav class="footer-links mono">
       <a href={cadlinguaApp} target="_blank" rel="noopener">CADlingua</a>
       <a href={pricingHref}>{t('nav.pricing')}</a>
-      <a href={contact}>hola@newlifesolutions.dev</a>
+      <a href={contact}>imafranj@gmail.com</a>
     </nav>
     <span class="mono fcopy">© {year} newlife · {t('footer.rights')}</span>
   </div>
