@@ -55,12 +55,23 @@ takes `pathEs`/`pathEn` (per-locale path after the locale root; `''` = home) to 
 `extraJsonLd` (page-specific `@graph` nodes). The home's FAQPage/SoftwareApplication only render when
 `chrome==='full'`. Pattern per content page = a locale-agnostic component (e.g. `Comparison.astro`)
 + two thin route wrappers (`src/pages/<es-slug>.astro` and `src/pages/en/<en-slug>.astro`) that set
-`lang`, the paths, `chrome="minimal"` and build their own `extraJsonLd`. Live GEO pages (3, bilingual,
-2026-06-24): comparison (`/comparativa-traductor-planos`), use-case (`/traducir-planos-aleman`),
-how-to (`/como-traducir-plano-sin-romper-cotas`) + their `/en/` twins.
+`lang`, the paths, `chrome="minimal"` and build their own `extraJsonLd`. Live content pages (bilingual):
+comparison (`/comparativa-traductor-planos`), use-case (`/traducir-planos-aleman`), how-to
+(`/como-traducir-plano-sin-romper-cotas`), pricing (`/precios`), **contact (`/contacto`)** + their
+`/en/` twins.
 **Adding a content page = FOUR hand-edits:** (1) strings in BOTH locales in `ui.ts`; (2) the two route
 wrappers; (3) its 2 URLs (with hreflang alternates) in `public/sitemap.xml`; (4) its 2 URLs in
-`scripts/indexnow.mjs`. Then build, deploy, `node scripts/indexnow.mjs`.
+`scripts/indexnow.mjs`. Then build, deploy, `node scripts/indexnow.mjs`. Gate is `npm run verify`
+(`check-i18n-parity` enforces both locales carry the same keys; `check-routes` enforces pages == sitemap
+== indexnow) — it FAILS the build if any of the four drift, so you can't forget one silently.
+
+**The contact form is the only page that talks to a backend** (the site is otherwise static). `Contact.astro`
+POSTs cross-origin to `accounts.newlifesolutions.dev/api/contact` (→ a CRM Lead). Two non-obvious
+constraints: (a) the accounts CORS allowlist must include the hub origin (it does — `www.newlifesolutions.dev`);
+(b) **the hub's own CSP `connect-src` in `vercel.json` must list `https://accounts.newlifesolutions.dev`** or
+the browser silently blocks the fetch. This was a real bug — **`curl` bypasses CSP so it passed; only a
+live-browser submit caught it.** Any future page that fetches accounts (or any cross-origin host) needs the
+same `connect-src` entry. Verify form changes with a real Playwright submit, not curl.
 
 **Background + intro layers** (both pure client `<script>` in their `.astro` file, both honor
 `prefers-reduced-motion`):
